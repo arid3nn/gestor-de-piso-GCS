@@ -1,0 +1,47 @@
+1. Arquitectura de la Aplicación
+
+Para este tipo de app, lo ideal es una arquitectura de Cliente-Servidor. Dado que quieres un chat y actualizaciones en tiempo real (como cuando alguien marca una tarea como hecha), habrá una comunicación bidireccional
+
+Módulos Principales:
+
+- Gestión de Gastos: Un sistema de "quién debe a quién". Se basa en transacciones y balances.
+- Tareas (Chore Tracker): Un sistema de rotación (por ejemplo, semanal) con notificaciones.
+- Votaciones: Un módulo de encuestas con fecha de expiración y recuento automático.
+- Chat: Comunicación mediante WebSockets para que sea instantánea.
+
+2. Stack Tecnológico Recomendado
+
+Para un desarrollo ágil y profesional, tecnologías que tienen mucha comunidad y son escalables:
+
+Frontend (Móvil)
+
+- React Native: Ideal para desarrollar una sola vez y publicar tanto en iOS como en Android.
+
+Backend (Lógica y API)
+
+- Node.js con NestJS: Es un framework de TypeScript muy organizado que facilitará escalar la app.
+- WebSockets (Socket.io): Imprescindible para que los mensajes del chat y las alertas de tareas aparezcan sin refrescar la pantalla.
+
+Base de Datos
+
+PostgreSQL: Para gastos y votaciones necesitas una base de datos relacional. Es vital que los números cuadren y que las relaciones entre usuarios y pagos sean sólidas.
+
+Redis: Opcional, pero muy útil para gestionar las sesiones de chat y notificaciones rápidas.
+
+3. El Modelo de Datos (Esquema)
+
+Es fundamental definir cómo se relacionan las cosas. Aquí un ejemplo de cómo estructurarlo:
+
+Entidad     |   Descripción
+------------------------------------------------------------------------------------
+Usuario     |   Nombre, email, avatar y el ID del "Piso" al que pertenece.
+Piso (Home) |   El grupo que une a varios usuarios. Tiene un código de invitación.
+Gasto       |   Título, cantidad total, quién pagó y quiénes deben (división).
+Tarea       |   Nombre, descripción, frecuencia y usuario asignado actual.
+Votación    |   Pregunta, opciones, votos emitidos y estado (abierta/cerrada).
+
+4. Funcionalidades extra
+
+- Sincronización de Gastos: Si alguien se equivoca, crea una transacción de corrección. Esto mantiene la transparencia.
+- Notificaciones Push: Firebase Cloud Messaging (FCM).
+- Algoritmo de Liquidación: Algoritmo que simplifique las deudas (ej. si A debe a B 10€ y B debe a C 10€, que A le pague directamente a C).
