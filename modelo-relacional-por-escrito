@@ -1,0 +1,219 @@
+Entidades y Atributos:
+
+Usuario (Users):
+
+user_id (PK, INT, Autoincrement)
+
+username (VARCHAR)
+
+email (VARCHAR, Unique)
+
+password_hash (VARCHAR)
+
+profile_picture_url (VARCHAR)
+
+created_at (TIMESTAMP)
+
+updated_at (TIMESTAMP)
+
+room_id (FK, INT) -- Relación 1:1 con Habitación (opcional)
+
+Piso (Flats/Apartments):
+
+flat_id (PK, INT, Autoincrement)
+
+name (VARCHAR)
+
+invite_code (VARCHAR, Unique)
+
+created_at (TIMESTAMP)
+
+updated_at (TIMESTAMP)
+
+Habitación (Rooms):
+
+room_id (PK, INT, Autoincrement)
+
+name (VARCHAR)
+
+flat_id (FK, INT) -- Relación N:1 con Piso
+
+Gasto (Expenses):
+
+expense_id (PK, INT, Autoincrement)
+
+title (VARCHAR)
+
+amount (DECIMAL)
+
+description (TEXT)
+
+paid_by (FK, INT, REFERENCES Users.user_id) -- Usuario que pagó
+
+date (DATE)
+
+flat_id (FK, INT) -- Relación N:1 con Piso
+
+created_at (TIMESTAMP)
+
+updated_at (TIMESTAMP)
+
+División de Gasto (ExpenseSplits):
+
+split_id (PK, INT, Autoincrement)
+
+expense_id (FK, INT) -- Relación N:1 con Gasto
+
+user_id (FK, INT) -- Usuario que debe una parte
+
+amount (DECIMAL) -- Monto específico que debe este usuario
+
+paid (BOOLEAN, Default: False)
+
+Tarea (Tasks):
+
+task_id (PK, INT, Autoincrement)
+
+name (VARCHAR)
+
+description (TEXT)
+
+frequency (ENUM: daily, weekly, biweekly, monthly)
+
+assigned_to (FK, INT, REFERENCES Users.user_id) -- Usuario asignado actualmente (opcional)
+
+room_id (FK, INT) -- Habitación a la que pertenece la tarea (opcional)
+
+flat_id (FK, INT) -- Relación N:1 con Piso
+
+last_completed (TIMESTAMP)
+
+created_at (TIMESTAMP)
+
+updated_at (TIMESTAMP)
+
+Votación (Polls):
+
+poll_id (PK, INT, Autoincrement)
+
+question (VARCHAR)
+
+description (TEXT)
+
+multiple_choice (BOOLEAN)
+
+allows_custom_options (BOOLEAN)
+
+expires_at (TIMESTAMP)
+
+flat_id (FK, INT) -- Relación N:1 con Piso
+
+created_at (TIMESTAMP)
+
+updated_at (TIMESTAMP)
+
+Opción de Votación (PollOptions):
+
+option_id (PK, INT, Autoincrement)
+
+poll_id (FK, INT) -- Relación N:1 con Votación
+
+option_text (VARCHAR)
+
+Voto (Votes):
+
+vote_id (PK, INT, Autoincrement)
+
+poll_id (FK, INT) -- Relación N:1 con Votación
+
+option_id (FK, INT) -- Relación N:1 con Opción de Votación
+
+user_id (FK, INT) -- Relación N:1 con Usuario
+
+Mensaje de Chat (ChatMessages):
+
+message_id (PK, INT, Autoincrement)
+
+sender_id (FK, INT, REFERENCES Users.user_id)
+
+flat_id (FK, INT) -- Relación N:1 con Piso
+
+message_text (TEXT)
+
+timestamp (TIMESTAMP)
+
+Comentario de Gasto (ExpenseComments):
+
+comment_id (PK, INT, Autoincrement)
+
+expense_id (FK, INT) -- Relación N:1 con Gasto
+
+user_id (FK, INT) -- Relación N:1 con Usuario
+
+comment_text (TEXT)
+
+timestamp (TIMESTAMP)
+
+Comentario de Tarea (TaskComments):
+
+comment_id (PK, INT, Autoincrement)
+
+task_id (FK, INT) -- Relación N:1 con Tarea
+
+user_id (FK, INT) -- Relación N:1 con Usuario
+
+comment_text (TEXT)
+
+timestamp (TIMESTAMP)
+
+Comentario de Votación (PollComments):
+
+comment_id (PK, INT, Autoincrement)
+
+poll_id (FK, INT) -- Relación N:1 con Votación
+
+user_id (FK, INT) -- Relación N:1 con Usuario
+
+comment_text (TEXT)
+
+timestamp (TIMESTAMP)
+
+Relaciones:
+
+Usuario <-> Piso: Relación N:1 a través del atributo flat_id en la tabla Users (o una tabla intermedia si un usuario puede pertenecer a múltiples pisos).
+
+Usuario <-> Habitación: Relación 1:1 (opcional) a través del atributo room_id en la tabla Users.
+
+Piso <-> Habitación: Relación 1:N a través del atributo flat_id en la tabla Rooms.
+
+Usuario <-> Gasto: Relación 1:N (un usuario paga muchos gastos) y N:M (un usuario participa en muchos gastos a través de la tabla ExpenseSplits).
+
+Piso <-> Gasto: Relación 1:N a través del atributo flat_id en la tabla Expenses.
+
+Gasto <-> División de Gasto: Relación 1:N a través del atributo expense_id en la tabla ExpenseSplits.
+
+Gasto <-> Comentario de Gasto: Relación 1:N a través del atributo expense_id en la tabla ExpenseComments.
+
+Usuario <-> Tarea: Relación 1:N (un usuario tiene asignadas muchas tareas) a través del atributo assigned_to en la tabla Tasks.
+
+Piso <-> Tarea: Relación 1:N a través del atributo flat_id en la tabla Tasks.
+
+Habitación <-> Tarea: Relación 1:N (opcional) a través del atributo room_id en la tabla Tasks.
+
+Tarea <-> Comentario de Tarea: Relación 1:N a través del atributo task_id en la tabla TaskComments.
+
+Piso <-> Votación: Relación 1:N a través del atributo flat_id en la tabla Polls.
+
+Votación <-> Opción de Votación: Relación 1:N a través del atributo poll_id en la tabla PollOptions.
+
+Votación <-> Voto: Relación 1:N a través del atributo poll_id en la tabla Votes.
+
+Votación <-> Comentario de Votación: Relación 1:N a través del atributo poll_id en la tabla PollComments.
+
+Opción de Votación <-> Voto: Relación 1:N a través del atributo option_id en la tabla Votes.
+
+Usuario <-> Voto: Relación 1:N a través del atributo user_id en la tabla Votes.
+
+Usuario <-> Mensaje de Chat: Relación 1:N a través del atributo sender_id en la tabla ChatMessages.
+
+Piso <-> Mensaje de Chat: Relación 1:N a través del atributo flat_id en la tabla ChatMessages.
