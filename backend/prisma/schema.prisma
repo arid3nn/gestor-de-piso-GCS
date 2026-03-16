@@ -1,0 +1,221 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+}
+
+model User {
+  id            String         @id @default(uuid())
+  email         String         @unique
+  passwordHash  String
+  firstName     String
+  lastName      String
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
+  deletedAt     DateTime?
+
+  // Relations
+  flats         FlatMember[]
+  createdByTask Task[]         @relation("TaskCreator")
+  assignedTasks Task[]         @relation("TaskAssignee")
+  paidExpenses  Expense[]      @relation("ExpensePayer")
+  expenseSplits ExpenseSplit[]
+  pollsCreated  Poll[]         @relation("PollCreator")
+  votes         Vote[]
+  chatMessages  ChatMessage[]
+
+  @@map("users")
+}
+
+model Flat {
+  id           String        @id @default(uuid())
+  name         String
+  joinCode     String        @unique
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+
+  // Relations
+  members      FlatMember[]
+  rooms        Room[]
+  tasks        Task[]
+  expenses     Expense[]
+  polls        Poll[]
+  chatMessages ChatMessage[]
+
+  @@map("flats")
+}
+
+enum Role {
+  ADMIN
+  MEMBER
+}
+
+model FlatMember {
+  id        String    @id @default(uuid())
+  userId    String
+  flatId    String
+  role      Role      @default(MEMBER)
+  joinedAt  DateTime  @default(now())
+  leftAt    DateTime?
+
+  // Relations
+  user      User      @relation(fields: [userId], references: [id])
+  flat      Flat      @relation(fields: [flatId], references: [id])
+
+  @@unique([userId, flatId]) // A user can only be in a flat once at a time
+  @@map("flat_members")
+}
+
+model Room {
+  id          String   @id @default(uuid())
+  flatId      String
+  name        String
+  description String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Relations
+  flat        Flat     @relation(fields: [flatId], references: [id])
+
+  @@map("rooms")
+}
+
+enum TaskFrequency {
+  ONCE
+  DAILY
+  WEEKLY
+  MONTHLY
+}
+
+model Task {
+  id            String        @id @default(uuid())
+  flatId        String
+  title         String
+  description   String?
+  frequency     TaskFrequency @default(ONCE)
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+  dueDate       DateTime?
+  lastCompleted DateTime?
+
+  // Relations
+  flat          Flat          @relation(fields: [flatId], references: [id])
+  createdBy     User          @relation("TaskCreator", fields: [createdById], references: [id])
+  createdById   String
+  assignedTo    User?         @relation("TaskAssignee", fields: [assignedToId], references: [id])
+  assignedToId  String?
+
+  @@map("tasks")
+}
+
+enum ExpenseCategory {
+  GROCERIES
+  UTILITIES
+  RENT
+  CLEANING
+  OTHER
+}
+
+model Expense {
+  id          String          @id @default(uuid())
+  flatId      String
+  title       String
+  amount      Decimal
+  category    ExpenseCategory @default(OTHER)
+  receiptUrl  String?
+  createdAt   DateTime        @default(now())
+  updatedAt   DateTime        @updatedAt
+  deletedAt   DateTime?
+
+  // Relations
+  flat        Flat            @relation(fields: [flatId], references: [id])
+  paidBy      User            @relation("ExpensePayer", fields: [paidById], references: [id])
+  paidById    String
+  splits      ExpenseSplit[]
+
+  @@map("expenses")
+}
+
+enum SplitStatus {
+  PENDING
+  PAID
+}
+
+model ExpenseSplit {
+  id          String      @id @default(uuid())
+  expenseId   String
+  userId      String
+  amount      Decimal
+  status      SplitStatus @default(PENDING)
+  paidAt      DateTime?
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+
+  // Relations
+  expense     Expense     @relation(fields: [expenseId], references: [id], onDelete: Cascade)
+  user        User        @relation(fields: [userId], references: [id])
+
+  @@unique([expenseId, userId])
+  @@map("expense_splits")
+}
+
+model Poll {
+  id          String       @id @default(uuid())
+  flatId      String
+  question    String
+  createdAt   DateTime     @default(now())
+  expiresAt   DateTime
+  isClosed    Boolean      @default(false)
+
+  // Relations
+  flat        Flat         @relation(fields: [flatId], references: [id])
+  createdBy   User         @relation("PollCreator", fields: [createdById], references: [id])
+  createdById String
+  options     PollOption[]
+
+  @@map("polls")
+}
+
+model PollOption {
+  id        String   @id @default(uuid())
+  pollId    String
+  text      String
+
+  // Relations
+  poll      Poll     @relation(fields: [pollId], references: [id], onDelete: Cascade)
+  votes     Vote[]
+
+  @@map("poll_options")
+}
+
+model Vote {
+  id           String      @id @default(uuid())
+  pollOptionId String
+  userId       String
+  createdAt    DateTime    @default(now())
+
+  // Relations
+  pollOption   PollOption  @relation(fields: [pollOptionId], references: [id], onDelete: Cascade)
+  user         User        @relation(fields: [userId], references: [id])
+
+  // Prerequisite: a user can only vote for a specific option once (and logic will ensure only 1 vote per poll overall)
+  @@unique([pollOptionId, userId])
+  @@map("votes")
+}
+
+model ChatMessage {
+  id        String   @id @default(uuid())
+  flatId    String
+  userId    String
+  content   String
+  createdAt DateTime @default(now())
+  deletedAt DateTime?
+
+  // Relations
+  flat      Flat     @relation(fields: [flatId], references: [id])
+  user      User     @relation(fields: [userId], references: [id])
+
+  @@map("chat_messages")
+}
