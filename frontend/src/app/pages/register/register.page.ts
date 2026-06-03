@@ -6,16 +6,16 @@ import { Router, RouterModule } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
 
 @Component({
-  selector: 'app-login',
+  selector: 'app-register',
   standalone: true,
   imports: [CommonModule, IonicModule, FormsModule, ReactiveFormsModule, RouterModule],
-  templateUrl: './login.page.html',
-  styleUrls: ['./login.page.scss'],
+  templateUrl: './register.page.html',
+  styleUrls: ['./register.page.scss'],
 })
-export class LoginPage {
+export class RegisterPage {
   form: FormGroup;
-  error: string | null = null;
   loading = false;
+  error: string | null = null;
 
   constructor(
     private fb: FormBuilder,
@@ -23,28 +23,37 @@ export class LoginPage {
     private router: Router
   ) {
     this.form = this.fb.group({
+      firstName: ['', [Validators.required]],
+      lastName: ['', [Validators.required]],
       email: ['', [Validators.required, Validators.email]],
-      password: ['', [Validators.required]],
+      password: ['', [Validators.required, Validators.minLength(6)]],
     });
   }
 
-  login() {
+  register() {
+    console.log('Register clicked', this.form.valid, this.form.value);
+
     if (this.form.invalid) {
       this.form.markAllAsTouched();
       return;
     }
 
-    this.error = null;
     this.loading = true;
+    this.error = null;
 
-    this.authService.login(this.form.value.email, this.form.value.password).subscribe({
+    const { firstName, lastName, email, password } = this.form.value;
+    this.authService.register(firstName, lastName, email, password).subscribe({
       next: () => {
         this.loading = false;
         this.router.navigate(['/tabs/home']);
       },
       error: (response) => {
         this.loading = false;
-        this.error = response?.error?.message || 'No se ha podido iniciar sesión';
+        this.error =
+          response?.error?.message ||
+          response?.message ||
+          'No se pudo registrar el usuario';
+        console.error('Registro error:', response);
       },
     });
   }

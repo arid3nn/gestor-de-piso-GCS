@@ -1,0 +1,46 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Crear / Unirse a piso</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  <ion-segment value="create" (ionChange)="setSegmentFromEvent($event)">
+    <ion-segment-button value="create">
+      <ion-label>Crear</ion-label>
+    </ion-segment-button>
+    <ion-segment-button value="join">
+      <ion-label>Unirse</ion-label>
+    </ion-segment-button>
+  </ion-segment>
+
+  <div *ngIf="segment === 'create'">
+    <form [formGroup]="createForm" (ngSubmit)="create()">
+      <ion-item>
+        <ion-label position="stacked">Nombre del piso</ion-label>
+        <ion-input formControlName="name"></ion-input>
+      </ion-item>
+
+      <ion-button expand="block" type="submit" [disabled]="loading">
+        {{ loading ? 'Creando...' : 'Crear piso' }}
+      </ion-button>
+    </form>
+  </div>
+
+  <div *ngIf="segment === 'join'">
+    <form [formGroup]="joinForm" (ngSubmit)="join()">
+      <ion-item>
+        <ion-label position="stacked">Código de unión</ion-label>
+        <ion-input formControlName="joinCode"></ion-input>
+      </ion-item>
+
+      <ion-button expand="block" type="submit" [disabled]="loading">
+        {{ loading ? 'Uniendo...' : 'Unirse' }}
+      </ion-button>
+    </form>
+  </div>
+
+  <ion-text color="danger" *ngIf="error">
+    <p>{{ error }}</p>
+  </ion-text>
+</ion-content>

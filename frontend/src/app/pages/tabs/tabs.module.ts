@@ -31,6 +31,10 @@ import { TabsPage } from './tabs.page';
             loadChildren: () => import('../polls/polls.module').then((m) => m.PollsPageModule),
           },
           {
+            path: 'setup',
+            loadChildren: () => import('../flat-setup/flat-setup.module').then((m) => m.FlatSetupPageModule),
+          },
+          {
             path: '',
             redirectTo: 'home',
             pathMatch: 'full',

@@ -25,4 +25,12 @@ export class FlatService {
   getMyFlats() {
     return this.api.get<any[]>('flats');
   }
+
+  createFlat(name: string) {
+    return this.api.post<any>('flats/create', { name });
+  }
+
+  joinFlat(joinCode: string) {
+    return this.api.post<any>('flats/join', { joinCode });
+  }
 }

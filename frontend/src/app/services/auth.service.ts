@@ -22,6 +22,19 @@ export class AuthService {
     );
   }
 
+  register(firstName: string, lastName: string, email: string, password: string) {
+    return this.api.post<{ access_token: string }>('auth/register', {
+      firstName,
+      lastName,
+      email,
+      password,
+    }).pipe(
+      tap((response) => {
+        localStorage.setItem(this.tokenKey, response.access_token);
+      })
+    );
+  }
+
   logout() {
     localStorage.removeItem(this.tokenKey);
     this.router.navigate(['/login']);
