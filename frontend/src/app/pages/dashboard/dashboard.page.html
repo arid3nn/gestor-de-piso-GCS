@@ -1,0 +1,46 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>ArmonIA</ion-title>
+    <ion-buttons slot="end">
+      <ion-button href="/login" routerDirection="root">Salir</ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  <ion-card>
+    <ion-card-header>
+      <ion-card-title>Selecciona tu piso</ion-card-title>
+      <ion-card-subtitle>Gestiona el hogar y accede a tus tareas</ion-card-subtitle>
+    </ion-card-header>
+
+    <ion-list>
+      <ion-item *ngFor="let flat of flats" [detail]="true" (click)="selectFlat(flat.id)">
+        <ion-label>
+          <h2>{{ flat.name }}</h2>
+          <p>ID: {{ flat.id }}</p>
+        </ion-label>
+        <ion-badge *ngIf="selectedFlatId === flat.id" color="primary">Seleccionado</ion-badge>
+      </ion-item>
+    </ion-list>
+
+    <ion-item *ngIf="flats.length === 0 && !loading">
+      <ion-label>No tienes pisos creados o estás pendiente de unión.</ion-label>
+    </ion-item>
+
+    <ion-text color="danger" *ngIf="error">
+      <p>{{ error }}</p>
+    </ion-text>
+  </ion-card>
+
+  <ion-card *ngIf="selectedFlatId">
+    <ion-card-header>
+      <ion-card-title>Estado actual</ion-card-title>
+      <ion-card-subtitle>Flat ID: {{ selectedFlatId }}</ion-card-subtitle>
+    </ion-card-header>
+
+    <ion-card-content>
+      <p>Usa las pestañas para acceder a gastos, tareas y votaciones.</p>
+    </ion-card-content>
+  </ion-card>
+</ion-content>

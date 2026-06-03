@@ -1,0 +1,45 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Votaciones</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  <ng-container *ngIf="selectedFlatId; else noFlat">
+    <ion-list>
+      <ion-item *ngFor="let poll of polls">
+        <ion-label>
+          <h2>{{ poll.question }}</h2>
+          <p *ngIf="poll.expiresAt">Expira: {{ poll.expiresAt | date:'short' }}</p>
+        </ion-label>
+      </ion-item>
+    </ion-list>
+
+    <ion-card *ngFor="let poll of polls">
+      <ion-card-header>
+        <ion-card-title>{{ poll.question }}</ion-card-title>
+      </ion-card-header>
+      <ion-list>
+        <ion-item *ngFor="let option of poll.options">
+          <ion-label>{{ option.text }}</ion-label>
+          <ion-button fill="outline" size="small" (click)="vote(poll.id, option.id)">Votar</ion-button>
+        </ion-item>
+      </ion-list>
+    </ion-card>
+
+    <ion-text color="danger" *ngIf="error">
+      <p>{{ error }}</p>
+    </ion-text>
+  </ng-container>
+
+  <ng-template #noFlat>
+    <ion-card>
+      <ion-card-header>
+        <ion-card-title>Selecciona un piso</ion-card-title>
+      </ion-card-header>
+      <ion-card-content>
+        Elige un piso en la pantalla de inicio para ver las votaciones del hogar.
+      </ion-card-content>
+    </ion-card>
+  </ng-template>
+</ion-content>

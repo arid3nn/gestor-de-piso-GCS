@@ -1,0 +1,36 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Tareas</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  <ng-container *ngIf="selectedFlatId; else noFlat">
+    <ion-list>
+      <ion-item *ngFor="let task of tasks">
+        <ion-label>
+          <h3>{{ task.title }}</h3>
+          <p>{{ task.description || 'Sin descripción' }}</p>
+        </ion-label>
+        <ion-button fill="outline" size="small" (click)="completeTask(task.id)">
+          Completar
+        </ion-button>
+      </ion-item>
+    </ion-list>
+
+    <ion-text color="danger" *ngIf="error">
+      <p>{{ error }}</p>
+    </ion-text>
+  </ng-container>
+
+  <ng-template #noFlat>
+    <ion-card>
+      <ion-card-header>
+        <ion-card-title>Selecciona un piso</ion-card-title>
+      </ion-card-header>
+      <ion-card-content>
+        Elige un piso en la pantalla de inicio para ver y gestionar tareas.
+      </ion-card-content>
+    </ion-card>
+  </ng-template>
+</ion-content>

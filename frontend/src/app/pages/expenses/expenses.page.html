@@ -1,0 +1,52 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Libro Contable</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  <ng-container *ngIf="selectedFlatId; else noFlat">
+    <ion-card *ngIf="balances.length > 0">
+      <ion-card-header>
+        <ion-card-title>Balances</ion-card-title>
+      </ion-card-header>
+      <ion-list>
+        <ion-item *ngFor="let balance of balances">
+          <ion-label>
+            <h3>{{ balance.fromName }} → {{ balance.toName }}</h3>
+            <p>{{ balance.amount | currency:'EUR' }}</p>
+          </ion-label>
+        </ion-item>
+      </ion-list>
+    </ion-card>
+
+    <ion-card>
+      <ion-card-header>
+        <ion-card-title>Gastos recientes</ion-card-title>
+      </ion-card-header>
+      <ion-list>
+        <ion-item *ngFor="let expense of expenses">
+          <ion-label>
+            <h3>{{ expense.title }}</h3>
+            <p>{{ expense.amount | currency:'EUR' }}</p>
+          </ion-label>
+        </ion-item>
+      </ion-list>
+    </ion-card>
+
+    <ion-text color="danger" *ngIf="error">
+      <p>{{ error }}</p>
+    </ion-text>
+  </ng-container>
+
+  <ng-template #noFlat>
+    <ion-card>
+      <ion-card-header>
+        <ion-card-title>Selecciona un piso</ion-card-title>
+      </ion-card-header>
+      <ion-card-content>
+        Elige un piso en la pantalla de inicio para ver gastos y saldos.
+      </ion-card-content>
+    </ion-card>
+  </ng-template>
+</ion-content>
