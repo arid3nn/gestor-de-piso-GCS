@@ -4,25 +4,68 @@
   </ion-toolbar>
 </ion-header>
 
-<ion-content class="ion-padding">
+<ion-content class="ion-padding polls-page">
   <ng-container *ngIf="selectedFlatId; else noFlat">
-    <ion-list>
-      <ion-item *ngFor="let poll of polls">
-        <ion-label>
-          <h2>{{ poll.question }}</h2>
-          <p *ngIf="poll.expiresAt">Expira: {{ poll.expiresAt | date:'short' }}</p>
-        </ion-label>
-      </ion-item>
-    </ion-list>
+    <ion-card>
+      <ion-card-header>
+        <ion-card-title>Nueva votación</ion-card-title>
+      </ion-card-header>
+      <form [formGroup]="pollForm" (ngSubmit)="createPoll()">
+        <ion-item>
+          <ion-label position="stacked">Pregunta</ion-label>
+          <ion-input formControlName="question" placeholder="Ej. ¿Dónde cenamos este viernes?"></ion-input>
+        </ion-item>
+        <ion-note slot="error" color="danger" *ngIf="pollForm.get('question')?.touched && pollForm.get('question')?.hasError('required')">
+          La pregunta es obligatoria.
+        </ion-note>
+
+        <ion-item>
+          <ion-label position="stacked">Opción 1</ion-label>
+          <ion-input formControlName="optionA" placeholder="Ej. Pizza"></ion-input>
+        </ion-item>
+        <ion-note slot="error" color="danger" *ngIf="pollForm.get('optionA')?.touched && pollForm.get('optionA')?.hasError('required')">
+          Agrega al menos dos opciones.
+        </ion-note>
+
+        <ion-item>
+          <ion-label position="stacked">Opción 2</ion-label>
+          <ion-input formControlName="optionB" placeholder="Ej. Sushi"></ion-input>
+        </ion-item>
+        <ion-note slot="error" color="danger" *ngIf="pollForm.get('optionB')?.touched && pollForm.get('optionB')?.hasError('required')">
+          Agrega al menos dos opciones.
+        </ion-note>
+
+        <ion-item>
+          <ion-label position="stacked">Opción 3</ion-label>
+          <ion-input formControlName="optionC" placeholder="Opción extra (opcional)"></ion-input>
+        </ion-item>
+
+        <ion-item>
+          <ion-label position="stacked">Fecha de cierre</ion-label>
+          <ion-datetime displayFormat="DD MMM" pickerFormat="DD MMM YYYY" formControlName="expiresAt"></ion-datetime>
+        </ion-item>
+        <ion-note slot="error" color="danger" *ngIf="pollForm.get('expiresAt')?.touched && pollForm.get('expiresAt')?.hasError('required')">
+          La fecha de cierre es obligatoria.
+        </ion-note>
+
+        <ion-button expand="block" type="submit" [disabled]="creating">
+          {{ creating ? 'Creando...' : 'Crear votación' }}
+        </ion-button>
+      </form>
+    </ion-card>
 
     <ion-card *ngFor="let poll of polls">
       <ion-card-header>
         <ion-card-title>{{ poll.question }}</ion-card-title>
+        <ion-card-subtitle *ngIf="poll.expiresAt">Expira {{ poll.expiresAt | date:'dd MMM' }}</ion-card-subtitle>
       </ion-card-header>
       <ion-list>
         <ion-item *ngFor="let option of poll.options">
           <ion-label>{{ option.text }}</ion-label>
-          <ion-button fill="outline" size="small" (click)="vote(poll.id, option.id)">Votar</ion-button>
+          <ion-badge slot="end">{{ option._count?.votes || 0 }} votos</ion-badge>
+          <ion-button fill="outline" size="small" (click)="vote(poll.id, option.id)">
+            Votar
+          </ion-button>
         </ion-item>
       </ion-list>
     </ion-card>
@@ -38,7 +81,7 @@
         <ion-card-title>Selecciona un piso</ion-card-title>
       </ion-card-header>
       <ion-card-content>
-        Elige un piso en la pantalla de inicio para ver las votaciones del hogar.
+        Elige un piso en la pantalla de inicio para ver y participar en las votaciones.
       </ion-card-content>
     </ion-card>
   </ng-template>

@@ -2,26 +2,27 @@
   <ion-toolbar>
     <ion-title>ArmonIA</ion-title>
     <ion-buttons slot="end">
-      <ion-button href="/login" routerDirection="root">Salir</ion-button>
+      <ion-button (click)="logout()">Salir</ion-button>
     </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
-<ion-content class="ion-padding">
-  <ion-card>
+<ion-content class="ion-padding dashboard-page">
+  <ion-card class="flat-card">
     <ion-card-header>
       <ion-card-title>Selecciona tu piso</ion-card-title>
-      <ion-card-subtitle>Gestiona el hogar y accede a tus tareas</ion-card-subtitle>
-      <ion-buttons slot="end">
-        <ion-button routerLink="/tabs/setup">Crear / Unirse</ion-button>
-      </ion-buttons>
+      <ion-card-subtitle>Gestiona tu hogar y revisa el estado en un vistazo</ion-card-subtitle>
     </ion-card-header>
 
+    <ion-card-content>
+      <ion-button expand="block" fill="solid" (click)="goToSetup()">Crear / Unirse</ion-button>
+    </ion-card-content>
+
     <ion-list>
-      <ion-item *ngFor="let flat of flats" [detail]="true" (click)="selectFlat(flat.id)">
+      <ion-item *ngFor="let flat of flats" [detail]="true" (click)="selectFlat(flat.id)" [class.selected]="selectedFlatId === flat.id">
         <ion-label>
-          <h2>{{ flat.name }}</h2>
-          <p>ID: {{ flat.id }}</p>
+          <h2>{{ flat.flat.name || flat.name }}</h2>
+          <p>{{ flat.flat._count?.members || flat._count?.members }} miembros</p>
         </ion-label>
         <ion-badge *ngIf="selectedFlatId === flat.id" color="primary">Seleccionado</ion-badge>
       </ion-item>
@@ -36,14 +37,70 @@
     </ion-text>
   </ion-card>
 
-  <ion-card *ngIf="selectedFlatId">
-    <ion-card-header>
-      <ion-card-title>Estado actual</ion-card-title>
-      <ion-card-subtitle>Flat ID: {{ selectedFlatId }}</ion-card-subtitle>
-    </ion-card-header>
+  <ng-container *ngIf="selectedFlatId; else noFlat">
+    <ion-card class="status-card">
+      <ion-card-header>
+        <ion-card-title>Armonía del Hogar</ion-card-title>
+      </ion-card-header>
+      <div class="score-block">
+        <div class="score-circle">
+          <span>{{ harmonyScore }}%</span>
+        </div>
+        <div class="score-text">
+          <p>Excelente</p>
+          <p>Estás a punto de alcanzar un hogar equilibrado.</p>
+        </div>
+      </div>
+    </ion-card>
 
-    <ion-card-content>
-      <p>Usa las pestañas para acceder a gastos, tareas y votaciones.</p>
-    </ion-card-content>
-  </ion-card>
+    <ion-card class="summary-card">
+      <ion-card-header>
+        <ion-card-title>Tareas para hoy</ion-card-title>
+      </ion-card-header>
+      <ion-list>
+        <ion-item *ngFor="let task of tasks">
+          <ion-label>
+            <h3>{{ task.title }}</h3>
+            <p>Asignada a {{ task.assignedToName }}</p>
+          </ion-label>
+          <ion-note slot="end" color="medium">{{ task.dueDate ? (task.dueDate | date:'dd MMM') : 'Sin fecha' }}</ion-note>
+        </ion-item>
+        <ion-item *ngIf="tasks.length === 0">
+          <ion-label>No hay tareas activas.</ion-label>
+        </ion-item>
+      </ion-list>
+    </ion-card>
+
+    <ion-card class="summary-card">
+      <ion-card-header>
+        <ion-card-title>Gastos pendientes</ion-card-title>
+      </ion-card-header>
+      <ion-list>
+        <ion-item *ngFor="let expense of pendingExpenses.slice(0, 3)">
+          <ion-label>
+            <h3>{{ expense.fromName }} → {{ expense.toName }}</h3>
+            <p>{{ expense.amount | currency:'EUR' }}</p>
+          </ion-label>
+        </ion-item>
+        <ion-item *ngIf="pendingExpenses.length === 0">
+          <ion-label>No hay deudas pendientes.</ion-label>
+        </ion-item>
+      </ion-list>
+      <ion-button expand="block" fill="solid" routerLink="/tabs/expenses">Ver todos</ion-button>
+    </ion-card>
+  </ng-container>
+
+  <ng-template #noFlat>
+    <ion-card>
+      <ion-card-header>
+        <ion-card-title>Selecciona un piso</ion-card-title>
+      </ion-card-header>
+      <ion-card-content>
+        Elige un piso para ver el resumen de tu hogar.
+      </ion-card-content>
+      <ion-card-content>
+        <ion-button expand="block" fill="solid" (click)="goToSetup()">Crear / Unirse</ion-button>
+      </ion-card-content>
+    </ion-card>
+  </ng-template>
 </ion-content>

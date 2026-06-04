@@ -1,7 +1,18 @@
+ion-card {
+  margin-bottom: 1rem;
+  border-radius: 18px;
+}
+
 ion-item {
-  align-items: center;
+  align-items: flex-start;
 }
 
 ion-button {
   margin-left: auto;
+}
+
+.task-meta {
+  color: var(--ion-color-medium);
+  font-size: 0.85rem;
+  margin-top: 0.25rem;
 }

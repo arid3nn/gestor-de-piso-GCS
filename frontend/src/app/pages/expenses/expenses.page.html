@@ -6,6 +6,50 @@
 
 <ion-content class="ion-padding">
   <ng-container *ngIf="selectedFlatId; else noFlat">
+    <ion-card>
+      <ion-card-header>
+        <ion-card-title>Nuevo gasto</ion-card-title>
+      </ion-card-header>
+      <form [formGroup]="expenseForm" (ngSubmit)="createExpense()">
+        <ion-item>
+          <ion-label position="stacked">Descripción</ion-label>
+          <ion-input formControlName="title" placeholder="Ej. Compra semanal"></ion-input>
+        </ion-item>
+        <ion-note slot="error" color="danger" *ngIf="expenseForm.get('title')?.touched && expenseForm.get('title')?.hasError('required')">
+          La descripción es obligatoria.
+        </ion-note>
+
+        <ion-item>
+          <ion-label position="stacked">Importe</ion-label>
+          <ion-input type="number" formControlName="amount" placeholder="0.00"></ion-input>
+        </ion-item>
+        <ion-note slot="error" color="danger" *ngIf="expenseForm.get('amount')?.touched && expenseForm.get('amount')?.hasError('required')">
+          El importe es obligatorio.
+        </ion-note>
+        <ion-note slot="error" color="danger" *ngIf="expenseForm.get('amount')?.touched && expenseForm.get('amount')?.hasError('min')">
+          El importe debe ser mayor que 0.
+        </ion-note>
+
+        <ion-item>
+          <ion-label position="stacked">Categoría</ion-label>
+          <ion-select formControlName="category">
+            <ion-select-option *ngFor="let category of categories" [value]="category.value">{{ category.label }}</ion-select-option>
+          </ion-select>
+        </ion-item>
+
+        <ion-button expand="block" type="submit" [disabled]="creating">
+          {{ creating ? 'Guardando...' : 'Registrar gasto' }}
+        </ion-button>
+      </form>
+
+      <ion-text color="success" *ngIf="successMessage">
+        <p>{{ successMessage }}</p>
+      </ion-text>
+      <ion-text color="danger" *ngIf="error">
+        <p>{{ error }}</p>
+      </ion-text>
+    </ion-card>
+
     <ion-card *ngIf="balances.length > 0">
       <ion-card-header>
         <ion-card-title>Balances</ion-card-title>
@@ -33,10 +77,6 @@
         </ion-item>
       </ion-list>
     </ion-card>
-
-    <ion-text color="danger" *ngIf="error">
-      <p>{{ error }}</p>
-    </ion-text>
   </ng-container>
 
   <ng-template #noFlat>

@@ -4,19 +4,75 @@
   </ion-toolbar>
 </ion-header>
 
-<ion-content class="ion-padding">
+<ion-content class="ion-padding tasks-page">
   <ng-container *ngIf="selectedFlatId; else noFlat">
-    <ion-list>
-      <ion-item *ngFor="let task of tasks">
-        <ion-label>
-          <h3>{{ task.title }}</h3>
-          <p>{{ task.description || 'Sin descripción' }}</p>
-        </ion-label>
-        <ion-button fill="outline" size="small" (click)="completeTask(task.id)">
-          Completar
+    <ion-card>
+      <ion-card-header>
+        <ion-card-title>Crear tarea</ion-card-title>
+      </ion-card-header>
+      <form [formGroup]="taskForm" (ngSubmit)="createTask()">
+        <ion-item>
+          <ion-label position="stacked">Título</ion-label>
+          <ion-input formControlName="title" placeholder="Ej. Sacar la basura"></ion-input>
+        </ion-item>
+        <ion-note slot="error" color="danger" *ngIf="taskForm.get('title')?.touched && taskForm.get('title')?.hasError('required')">
+          El título es obligatorio.
+        </ion-note>
+
+        <ion-item>
+          <ion-label position="stacked">Descripción</ion-label>
+          <ion-textarea formControlName="description" placeholder="Detalles de la tarea"></ion-textarea>
+        </ion-item>
+
+        <ion-item>
+          <ion-label position="stacked">Frecuencia</ion-label>
+          <ion-select formControlName="frequency">
+            <ion-select-option *ngFor="let option of frequencyOptions" [value]="option.value">{{ option.label }}</ion-select-option>
+          </ion-select>
+        </ion-item>
+
+        <ion-item>
+          <ion-label position="stacked">Fecha de vencimiento</ion-label>
+          <ion-datetime displayFormat="DD MMM" pickerFormat="DD MMM YYYY" formControlName="dueDate"></ion-datetime>
+        </ion-item>
+
+        <ion-item>
+          <ion-label position="stacked">Asignar a</ion-label>
+          <ion-select formControlName="assignedToId">
+            <ion-select-option value="">Sin asignar</ion-select-option>
+            <ion-select-option *ngFor="let member of members" [value]="member.userId">
+              {{ member.firstName }} {{ member.lastName }}
+            </ion-select-option>
+          </ion-select>
+        </ion-item>
+
+        <ion-button expand="block" type="submit" [disabled]="creating">
+          {{ creating ? 'Guardando...' : 'Asignar tarea' }}
         </ion-button>
-      </ion-item>
-    </ion-list>
+      </form>
+    </ion-card>
+
+    <ion-card>
+      <ion-card-header>
+        <ion-card-title>Tareas pendientes</ion-card-title>
+      </ion-card-header>
+      <ion-list>
+        <ion-item *ngFor="let task of tasks">
+          <ion-label>
+            <h3>{{ task.title }}</h3>
+            <p>{{ task.description || 'Sin descripción' }}</p>
+            <p class="task-meta">{{ task.assignedTo?.firstName || 'Sin asignar' }} · {{ task.frequency }}</p>
+            <p *ngIf="task.dueDate">Vence {{ task.dueDate | date:'dd MMM' }}</p>
+          </ion-label>
+          <ion-button fill="outline" size="small" (click)="completeTask(task.id)">
+            Completar
+          </ion-button>
+        </ion-item>
+        <ion-item *ngIf="tasks.length === 0">
+          <ion-label>No hay tareas activas.</ion-label>
+        </ion-item>
+      </ion-list>
+    </ion-card>
 
     <ion-text color="danger" *ngIf="error">
       <p>{{ error }}</p>

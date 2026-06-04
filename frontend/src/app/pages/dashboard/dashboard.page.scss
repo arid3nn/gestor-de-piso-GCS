@@ -1,7 +1,47 @@
 ion-card {
   margin-bottom: 1rem;
+  border-radius: 18px;
 }
 
 ion-badge {
   margin-left: 0.5rem;
+}
+
+.dashboard-page ion-card.summary-card,
+.dashboard-page ion-card.status-card,
+.dashboard-page ion-card.flat-card {
+  border-radius: 22px;
+}
+
+.score-block {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem 0;
+}
+
+.score-circle {
+  width: 96px;
+  height: 96px;
+  border-radius: 50%;
+  background: radial-gradient(circle at top left, #d4a182, #8b3f24);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  font-size: 1.6rem;
+  font-weight: 700;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.12);
+}
+
+.score-text p {
+  margin: 0;
+}
+
+.flat-card ion-item.selected {
+  --background: rgba(136, 86, 52, 0.08);
+}
+
+ion-card .ion-button {
+  margin-top: 0.5rem;
 }
