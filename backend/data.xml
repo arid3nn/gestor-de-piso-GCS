@@ -1,0 +1,21 @@
+<database>
+  <users>
+    <user>
+      <id>78a93153-5853-408f-a9e8-987ac3efe3d5</id>
+      <email>aaa@aaa.com</email>
+      <passwordHash>$2b$10$g92wvXqO3ycA3Lgn6NIRy.rdd2fAlQP4xMjFuI/VIzwUAkYyfwnfG</passwordHash>
+      <firstName>aaa</firstName>
+      <lastName>aaa</lastName>
+    </user>
+  </users>
+  <flats></flats>
+  <rooms></rooms>
+  <flatMember></flatMember>
+  <task></task>
+  <expense></expense>
+  <expenseSplit></expenseSplit>
+  <poll></poll>
+  <pollOption></pollOption>
+  <vote></vote>
+  <chatMessage></chatMessage>
+</database>

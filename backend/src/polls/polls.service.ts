@@ -71,7 +71,7 @@ export class PollsService {
       throw new BadRequestException('This poll is closed.');
     }
 
-    const optionExists = poll.options.some(o => o.id === dto.optionId);
+    const optionExists = poll.options.some((o: any) => o.id === dto.optionId);
     if (!optionExists) throw new NotFoundException('Option not found in this poll.');
 
     // Enforce 1 vote per user per poll
