@@ -1,9 +1,11 @@
 <database>
   <users>
     <user>
-      <id>78a93153-5853-408f-a9e8-987ac3efe3d5</id>
-      <email>aaa@aaa.com</email>
-      <passwordHash>$2b$10$g92wvXqO3ycA3Lgn6NIRy.rdd2fAlQP4xMjFuI/VIzwUAkYyfwnfG</passwordHash>
+      <id>0a6bf891-8236-407e-a56c-c25ae6ae95f7</id>
+      <createdAt>2026-06-07T23:55:52.488Z</createdAt>
+      <updatedAt>2026-06-07T23:55:52.488Z</updatedAt>
+      <email>aaaa@aaa.com</email>
+      <passwordHash>$2b$10$xErcSfv1q1E9c5XPu9N8..LZHOwSmlAqky6WmYmDUEm.OwxfE2V.O</passwordHash>
       <firstName>aaa</firstName>
       <lastName>aaa</lastName>
     </user>

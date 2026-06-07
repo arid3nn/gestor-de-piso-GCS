@@ -201,7 +201,8 @@ export class PrismaService implements OnModuleInit, OnModuleDestroy {
   }
 
   private createRecord(modelName: ModelName, data: any) {
-    const record: any = { id: data?.id || randomUUID() };
+    const createdAt = data?.createdAt ? this.normalizeValue(data.createdAt) : new Date().toISOString();
+    const record: any = { id: data?.id || randomUUID(), createdAt, updatedAt: createdAt };
     if (data) {
       for (const [key, value] of Object.entries(data)) {
         if (this.isNestedCreate(key, value)) continue;
@@ -356,8 +357,8 @@ export class PrismaService implements OnModuleInit, OnModuleDestroy {
     if (!where) return true;
     return Object.entries(where).every(([key, value]) => {
       if (value && typeof value === 'object' && !Array.isArray(value)) {
-        if (key.includes('_')) {
-          return this.matchesWhere(modelName, record, value);
+        if (key.includes('_') && !record.hasOwnProperty(key)) {
+          return this.matchesCompoundUnique(record, key, value);
         }
         const relation = relationConfig[modelName]?.[key];
         if (relation) {
@@ -370,6 +371,16 @@ export class PrismaService implements OnModuleInit, OnModuleDestroy {
         return this.matchesWhere(modelName, record[key], value as any);
       }
       return record[key] === value;
+    });
+  }
+
+  private matchesCompoundUnique(record: any, compoundKey: string, where: any): boolean {
+    const keys = compoundKey.split('_');
+    return keys.every((key) => {
+      if (!(key in where)) {
+        return false;
+      }
+      return record[key] === where[key];
     });
   }
 

@@ -46,9 +46,16 @@ export class DashboardPage implements OnInit {
 
   loadFlats() {
     this.loading = true;
+    this.error = null;
     this.flatService.getMyFlats().subscribe({
       next: (flats) => {
         this.flats = flats || [];
+        if (!this.selectedFlatId && this.flats.length > 0) {
+          const firstFlatId = this.flats[0].id || this.flats[0].flat?.id;
+          if (firstFlatId) {
+            this.selectFlat(firstFlatId);
+          }
+        }
         this.loading = false;
       },
       error: (response) => {

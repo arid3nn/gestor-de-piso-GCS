@@ -58,26 +58,46 @@ export class ExpensesService {
     const pendingSplits = await this.prisma.expenseSplit.findMany({
       where: {
         status: 'PENDING',
-        expense: { flatId: flatId }
+        expense: { flatId: flatId },
       },
       include: {
-        expense: { select: { paidById: true } }
+        user: { select: { id: true, firstName: true, lastName: true } },
+        expense: {
+          select: {
+            paidById: true,
+            paidBy: { select: { id: true, firstName: true, lastName: true } },
+          }
+        }
       }
     });
 
     // 2. Map Net Balances for every user.
     const netBalances: Record<string, number> = {};
+    const namesById: Record<string, { firstName: string; lastName: string }> = {};
 
     pendingSplits.forEach(split => {
-      const debtor = split.userId;
-      const creditor = split.expense.paidById;
+      const debtorId = split.user?.id || split.userId;
+      const creditorId = split.expense?.paidBy?.id || split.expense?.paidById;
       const amount = Number(split.amount);
 
-      if (!netBalances[debtor]) netBalances[debtor] = 0;
-      if (!netBalances[creditor]) netBalances[creditor] = 0;
+      if (!netBalances[debtorId]) netBalances[debtorId] = 0;
+      if (!netBalances[creditorId]) netBalances[creditorId] = 0;
 
-      netBalances[debtor] -= amount; // Debtors lose net balance
-      netBalances[creditor] += amount; // Creditors gain net balance
+      netBalances[debtorId] -= amount;
+      netBalances[creditorId] += amount;
+
+      if (split.user) {
+        namesById[debtorId] = {
+          firstName: split.user.firstName,
+          lastName: split.user.lastName,
+        };
+      }
+      if (split.expense?.paidBy) {
+        namesById[creditorId] = {
+          firstName: split.expense.paidBy.firstName,
+          lastName: split.expense.paidBy.lastName,
+        };
+      }
     });
 
     // 3. Simple Greedy Graph Simplification (Debt Liquidation MVP)
@@ -109,6 +129,8 @@ export class ExpensesService {
       simplifiedDebts.push({
         from: debtor.id,
         to: creditor.id,
+        fromName: `${namesById[debtor.id]?.firstName || 'Usuario'} ${namesById[debtor.id]?.lastName || ''}`.trim(),
+        toName: `${namesById[creditor.id]?.firstName || 'Usuario'} ${namesById[creditor.id]?.lastName || ''}`.trim(),
         amount: Number(settledAmount.toFixed(2))
       });
 
