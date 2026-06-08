@@ -72,7 +72,7 @@ export class DashboardPage implements OnInit {
   }
 
   goToSetup() {
-    this.router.navigate(['/tabs/setup']);
+    this.router.navigate(['/setup']); // antes era /tabs/setup
   }
 
   logout() {
