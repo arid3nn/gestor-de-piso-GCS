@@ -1,14 +1,58 @@
-ion-item {
-  margin-bottom: 1rem;
+.register-container {
+  max-width: 450px;
+  margin: 0 auto;
+  padding: 30px 10px;
+  display: flex;
+  flex-direction: column;
 }
 
-.login-link {
+.logo-area {
+  text-align: center;
+  margin-bottom: 30px;
+  
+  .logo-icon {
+    font-size: 3.5rem;
+    margin-bottom: 12px;
+  }
+  
+  .app-logo-text {
+    font-size: 2.5rem;
+    font-weight: 800;
+    color: #3E2319;
+    margin: 0;
+  }
+  
+  .logo-subtitle {
+    font-size: 1.05rem;
+    color: #8C736C;
+    margin-top: 8px;
+    margin-bottom: 0;
+    line-height: 1.4;
+  }
+}
+
+.input-group {
+  margin-bottom: 12px;
+}
+
+.error-message {
   margin-top: 1rem;
   text-align: center;
 }
 
-.login-link a {
-  color: var(--ion-color-primary);
-  text-decoration: none;
-  font-weight: 600;
+.login-link {
+  margin-top: 32px;
+  text-align: center;
+  
+  p {
+    color: #8C736C;
+    margin-bottom: 4px;
+    font-size: 0.95rem;
+  }
+  
+  a {
+    color: #9D4436;
+    text-decoration: none;
+    font-weight: 700;
+  }
 }

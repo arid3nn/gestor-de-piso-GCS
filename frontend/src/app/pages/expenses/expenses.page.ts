@@ -4,6 +4,7 @@ import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } 
 import { IonicModule } from '@ionic/angular';
 import { FlatService } from '../../services/flat.service';
 import { ApiService } from '../../services/api.service';
+import { AuthService } from '../../services/auth.service';
 
 interface FlatMember {
   userId: string;
@@ -40,13 +41,34 @@ export class ExpensesPage implements OnInit {
   constructor(
     private flatService: FlatService,
     private api: ApiService,
-    private formBuilder: FormBuilder
+    private formBuilder: FormBuilder,
+    private authService: AuthService
   ) {
     this.expenseForm = this.formBuilder.group({
       title: ['', [Validators.required]],
       amount: [null, [Validators.required, Validators.min(0.01)]],
       category: ['OTHER'],
     });
+  }
+
+  get balanceTotal(): number {
+    const currentUser = this.authService.getCurrentUser();
+    if (!currentUser) return 0;
+    const currentUserName = `${currentUser.firstName} ${currentUser.lastName || ''}`.trim();
+    
+    let total = 0;
+    for (const b of this.balances) {
+      if (b.fromName.toLowerCase() === currentUserName.toLowerCase() || b.fromName.toLowerCase() === currentUser.firstName.toLowerCase()) {
+        total -= b.amount;
+      } else if (b.toName.toLowerCase() === currentUserName.toLowerCase() || b.toName.toLowerCase() === currentUser.firstName.toLowerCase()) {
+        total += b.amount;
+      }
+    }
+    return Number(total.toFixed(2));
+  }
+
+  get monthlyExpenses(): number {
+    return Number(this.expenses.reduce((sum, e) => sum + Number(e.amount || 0), 0).toFixed(2));
   }
 
   ngOnInit() {

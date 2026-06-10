@@ -1,40 +1,26 @@
-/*
- * App Global CSS
- * ----------------------------------------------------------------------------
- * Put style rules here that you want to apply globally. These styles are for
- * the entire app and not just one component. Additionally, this file can be
- * used as an entry point to import other CSS/Sass files to be included in the
- * output CSS.
- * For more information on global stylesheets, visit the documentation:
- * https://ionicframework.com/docs/layout/global-stylesheets
- */
-
-/* Core CSS required for Ionic components to work properly */
+/* App Global CSS - G06 Figma Layout */
 @import "@ionic/angular/css/core.css";
-
-/* Basic CSS for apps built with Ionic */
 @import "@ionic/angular/css/normalize.css";
 @import "@ionic/angular/css/structure.css";
 @import "@ionic/angular/css/typography.css";
 @import "@ionic/angular/css/display.css";
-
-/* Optional CSS utils that can be commented out */
 @import "@ionic/angular/css/padding.css";
 @import "@ionic/angular/css/float-elements.css";
 @import "@ionic/angular/css/text-alignment.css";
 @import "@ionic/angular/css/text-transformation.css";
 @import "@ionic/angular/css/flex-utils.css";
+/* @import "@ionic/angular/css/palettes/dark.system.css"; */
 
-/**
- * Ionic Dark Mode
- * -----------------------------------------------------
- * For more info, please see:
- * https://ionicframework.com/docs/theming/dark-mode
- */
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap');
 
-/* @import "@ionic/angular/css/palettes/dark.always.css"; */
-/* @import "@ionic/angular/css/palettes/dark.class.css"; */
-@import "@ionic/angular/css/palettes/dark.system.css";
+body, html, * {
+  font-family: 'Outfit', sans-serif !important;
+}
+
+/* Page layouts */
+ion-content {
+  --background: #FAF5F0;
+}
 
 ion-router-outlet {
   pointer-events: none;
@@ -42,4 +28,271 @@ ion-router-outlet {
 
 ion-router-outlet > .ion-page {
   pointer-events: all;
+}
+
+/* Custom Toolbars matching Figma */
+ion-header {
+  box-shadow: none;
+  background: #FAF5F0;
+  
+  ion-toolbar {
+    --background: #FAF5F0;
+    --border-style: none;
+    --padding-top: 15px;
+    --padding-bottom: 15px;
+    --padding-start: 16px;
+    --padding-end: 16px;
+    
+    ion-title {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: #3E2319;
+      padding-inline: 0;
+    }
+  }
+}
+
+/* Headings */
+.page-title {
+  font-size: 2.2rem;
+  font-weight: 700;
+  color: #3E2319;
+  margin-top: 24px;
+  margin-bottom: 8px;
+}
+
+.page-subtitle {
+  font-size: 1.1rem;
+  font-weight: 400;
+  color: #8C736C;
+  line-height: 1.4;
+  margin-bottom: 24px;
+}
+
+.section-title {
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: #3E2319;
+  margin-top: 24px;
+  margin-bottom: 16px;
+}
+
+/* Ionic Cards */
+ion-card {
+  background: #FFFFFF;
+  border-radius: 20px;
+  box-shadow: 0 4px 24px rgba(140, 115, 108, 0.05);
+  margin-bottom: 20px;
+  border: none;
+  overflow: hidden;
+  
+  ion-card-header {
+    padding: 20px 20px 10px 20px;
+    
+    ion-card-title {
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: #3E2319;
+    }
+    
+    ion-card-subtitle {
+      font-size: 0.9rem;
+      color: #8C736C;
+      text-transform: none;
+      letter-spacing: normal;
+    }
+  }
+  
+  ion-card-content {
+    padding: 10px 20px 20px 20px;
+  }
+}
+
+/* Custom lists */
+ion-list {
+  background: transparent !important;
+  padding: 0 !important;
+}
+
+ion-item {
+  --background: transparent;
+  --border-color: transparent;
+  --inner-border-width: 0;
+  --padding-start: 0;
+  --padding-end: 0;
+  --min-height: 48px;
+  margin-bottom: 12px;
+}
+
+/* Custom Form Styles */
+ion-item.item-has-focus, ion-item.item-interactive {
+  --border-color: transparent;
+  --inner-border-width: 0;
+  --background-activated: transparent;
+  --background-hover: transparent;
+}
+
+ion-label[position="stacked"] {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #3E2319 !important;
+  transform: none !important;
+  margin-bottom: 8px;
+}
+
+ion-input, ion-textarea, ion-select {
+  background: #F6EBE2;
+  border-radius: 14px;
+  --padding-start: 16px;
+  --padding-end: 16px;
+  --padding-top: 14px;
+  --padding-bottom: 14px;
+  color: #3E2319;
+  font-size: 1rem;
+  font-weight: 500;
+}
+
+/* Buttons */
+ion-button {
+  --border-radius: 16px;
+  --background: #592C1D;
+  --color: #ffffff;
+  --background-hover: #4e271a;
+  --background-activated: #4e271a;
+  --box-shadow: none;
+  font-weight: 600;
+  height: 52px;
+  margin-top: 16px;
+  margin-bottom: 8px;
+}
+
+ion-button[fill="clear"] {
+  --color: #9D4436;
+  --background: transparent;
+  --background-hover: transparent;
+  --background-activated: transparent;
+  height: auto;
+  margin: 0;
+  font-weight: 700;
+}
+
+ion-button[fill="outline"] {
+  --border-color: #592C1D;
+  --color: #592C1D;
+  --background: transparent;
+  --border-width: 2px;
+  --border-radius: 16px;
+}
+
+/* Floating Action Button */
+.fab-btn {
+  position: fixed;
+  bottom: 80px;
+  right: 20px;
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: #9D4436;
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 16px rgba(157, 68, 54, 0.3);
+  z-index: 100;
+  font-size: 28px;
+  cursor: pointer;
+}
+
+/* Circular Checkbox Outlines */
+.circle-checkbox {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  border: 2px solid #8C736C;
+  margin-right: 16px;
+  display: inline-block;
+  cursor: pointer;
+  flex-shrink: 0;
+  
+  &.checked {
+    background: #9D4436;
+    border-color: #9D4436;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    &::after {
+      content: '✓';
+      color: #ffffff;
+      font-size: 14px;
+      font-weight: 700;
+    }
+  }
+}
+
+/* Custom Badges */
+ion-badge {
+  background: #FADED6 !important;
+  color: #9D4436 !important;
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+
+/* Validation Notes */
+ion-note[color="danger"] {
+  color: #9D4436 !important;
+  font-size: 0.85rem;
+  font-weight: 500;
+  margin-top: 4px;
+  display: block;
+}
+
+/* Overrides to prevent contrast issues */
+p, span, ion-label, ion-input, ion-textarea, ion-select, ion-datetime, ion-title, h1, h2, h3, h4, h5, h6 {
+  color: #3E2319 !important; /* Force high contrast dark chocolate color by default */
+}
+
+.page-subtitle, .logo-subtitle, ion-card-subtitle, ion-note, p.expense-description, p.task-meta, .task-check-card p {
+  color: #8C736C !important; /* Force legible secondary warm gray-brown */
+}
+
+/* Override input text */
+input, textarea, .select-text, .datetime-text {
+  color: #3E2319 !important;
+}
+
+/* Badge and specific white text exceptions */
+ion-badge, .vote-count-badge {
+  color: #9D4436 !important;
+}
+
+.harmony-percentage {
+  color: #3E2319 !important;
+}
+
+.harmony-status {
+  color: #9D4436 !important;
+}
+
+.streak-value, .streak-title, .streak-quote, .streak-label {
+  color: #FAF5F0 !important; /* Keep white/cream text inside dark streak card */
+}
+
+.balance-label, .balance-value, .footer-label, .footer-value {
+  color: #FAF5F0 !important; /* Keep white/cream text inside dark balance card */
+}
+
+.balance-summary-card {
+  h1, span {
+    color: #FAF5F0 !important;
+  }
+  .armonia-badge {
+    color: #FAF5F0 !important;
+  }
+}
+
+ion-button, .fab-btn, .circle-checkbox.checked::after {
+  --color: #ffffff !important;
+  color: #ffffff !important; /* Keep white text inside buttons */
 }

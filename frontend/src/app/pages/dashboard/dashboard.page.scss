@@ -1,47 +1,338 @@
-ion-card {
-  margin-bottom: 1rem;
-  border-radius: 18px;
+.custom-header-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  padding: 0 4px;
 }
 
-ion-badge {
-  margin-left: 0.5rem;
-}
-
-.dashboard-page ion-card.summary-card,
-.dashboard-page ion-card.status-card,
-.dashboard-page ion-card.flat-card {
-  border-radius: 22px;
-}
-
-.score-block {
+.header-left {
   display: flex;
   align-items: center;
-  gap: 1rem;
-  padding: 1rem 0;
+  gap: 12px;
 }
 
-.score-circle {
-  width: 96px;
-  height: 96px;
+.avatar-circle {
+  width: 36px;
+  height: 36px;
   border-radius: 50%;
-  background: radial-gradient(circle at top left, #d4a182, #8b3f24);
+  background: #592C1D;
+  color: #FAF5F0;
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #fff;
-  font-size: 1.6rem;
   font-weight: 700;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.12);
+  font-size: 14px;
 }
 
-.score-text p {
-  margin: 0;
+.header-app-name {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #3E2319;
 }
 
-.flat-card ion-item.selected {
-  --background: rgba(136, 86, 52, 0.08);
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  
+  ion-icon {
+    font-size: 24px;
+    color: #3E2319;
+    cursor: pointer;
+  }
 }
 
-ion-card .ion-button {
-  margin-top: 0.5rem;
+/* Introduction block */
+.dashboard-header-intro {
+  margin-bottom: 24px;
+}
+
+/* Flat Selector Card */
+.flat-selector-card {
+  .flat-list-items {
+    margin: 10px 0;
+  }
+  
+  ion-item {
+    --padding-start: 12px;
+    --padding-end: 12px;
+    border-radius: 12px;
+    background: #FAF5F0;
+    margin-bottom: 8px;
+    cursor: pointer;
+    
+    &.selected {
+      background: #F6EBE2;
+      border: 1px solid rgba(89, 44, 29, 0.15);
+    }
+  }
+  
+  .flat-item-content {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  
+  .flat-icon-box {
+    font-size: 24px;
+  }
+  
+  .flat-text-box {
+    h3 {
+      font-size: 1rem;
+      font-weight: 700;
+      color: #3E2319;
+      margin: 0 0 2px 0;
+    }
+    
+    p {
+      font-size: 0.85rem;
+      color: #8C736C;
+      margin: 0;
+    }
+  }
+  
+  .setup-btn-container {
+    padding: 10px 20px 20px 20px;
+  }
+}
+
+/* Harmony Score Card */
+.harmony-score-card {
+  background: #F5EAE1;
+  border-radius: 24px;
+  position: relative;
+  
+  // Top right curve accent (Figma layout decoration)
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 80px;
+    height: 80px;
+    border-bottom-left-radius: 100%;
+    background: rgba(89, 44, 29, 0.04);
+    pointer-events: none;
+  }
+  
+  .card-section-title {
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: #3E2319;
+    margin: 0 0 20px 0;
+  }
+  
+  .harmony-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 10px 0;
+  }
+  
+  .harmony-circle-progress {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    border: 12px solid #9D4436; /* Figma dark red-orange indicator ring */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 20px;
+  }
+  
+  .harmony-inner-circle {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    
+    .harmony-percentage {
+      font-size: 2.2rem;
+      font-weight: 800;
+      color: #3E2319;
+      line-height: 1;
+    }
+    
+    .harmony-status {
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: #9D4436;
+      margin-top: 4px;
+      letter-spacing: 1.5px;
+    }
+  }
+  
+  .harmony-footer-text {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: #3E2319;
+    margin: 0;
+    text-align: center;
+  }
+}
+
+/* Sections headers */
+.section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 28px;
+  margin-bottom: 16px;
+  
+  .section-title {
+    margin: 0;
+  }
+  
+  .ver-todo-link {
+    font-size: 0.9rem;
+    font-weight: 700;
+    color: #9D4436;
+    text-decoration: none;
+  }
+}
+
+/* Custom Checklist Items */
+.dashboard-tasks-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 24px;
+}
+
+.task-card-item {
+  background: #FFFFFF;
+  border-radius: 18px;
+  padding: 16px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: 0 4px 16px rgba(140, 115, 108, 0.04);
+  cursor: pointer;
+  
+  .task-left {
+    display: flex;
+    align-items: center;
+  }
+  
+  .task-details {
+    h3 {
+      font-size: 0.98rem;
+      font-weight: 700;
+      color: #3E2319;
+      margin: 0 0 2px 0;
+    }
+    
+    p {
+      font-size: 0.85rem;
+      color: #8C736C;
+      margin: 0;
+    }
+  }
+  
+  .task-right {
+    .task-due-date {
+      font-size: 0.8rem;
+      color: #8C736C;
+      font-weight: 600;
+    }
+  }
+}
+
+/* Pending Debts List (Grid style card list) */
+.dashboard-expenses-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 16px;
+  margin-bottom: 30px;
+}
+
+.expense-card-item {
+  background: #FFFFFF;
+  border-radius: 20px;
+  padding: 20px;
+  box-shadow: 0 4px 20px rgba(140, 115, 108, 0.04);
+  display: flex;
+  flex-direction: column;
+  
+  .expense-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+  }
+  
+  .expense-category-icon {
+    font-size: 22px;
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    background: #F6EBE2;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .expense-badge-due {
+    background: #FADED6;
+    color: #9D4436;
+    font-size: 0.75rem;
+    font-weight: 700;
+    padding: 4px 10px;
+    border-radius: 12px;
+  }
+  
+  .expense-amount-box {
+    margin-bottom: 20px;
+    
+    .expense-amount {
+      font-size: 1.8rem;
+      font-weight: 800;
+      color: #3E2319;
+      margin: 0 0 4px 0;
+    }
+    
+    .expense-description {
+      font-size: 0.9rem;
+      color: #8C736C;
+      margin: 0;
+      font-weight: 500;
+    }
+  }
+  
+  .saldar-btn {
+    --background: #9D4436;
+    --background-hover: #86382b;
+    --background-activated: #86382b;
+    height: 44px;
+    margin: 0;
+  }
+}
+
+/* Empty states */
+.empty-state-card {
+  background: #FFFFFF;
+  border-radius: 16px;
+  padding: 24px;
+  text-align: center;
+  color: #8C736C;
+  font-size: 0.95rem;
+  box-shadow: 0 4px 16px rgba(140, 115, 108, 0.03);
+}
+
+.welcome-container {
+  text-align: center;
+  padding: 40px 10px;
+  
+  .welcome-icon {
+    font-size: 4rem;
+    margin-bottom: 16px;
+  }
+}
+
+.setup-card {
+  max-width: 400px;
+  margin: 24px auto 0 auto;
 }

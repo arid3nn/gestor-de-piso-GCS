@@ -1,59 +1,69 @@
-<ion-header>
-  <ion-toolbar>
-    <ion-title>Registro</ion-title>
-  </ion-toolbar>
-</ion-header>
-
 <ion-content class="ion-padding">
-  <form [formGroup]="form" (ngSubmit)="register()">
-    <ion-item>
-      <ion-label position="stacked">Nombre</ion-label>
-      <ion-input formControlName="firstName"></ion-input>
-    </ion-item>
-    <ion-note slot="error" color="danger" *ngIf="form.get('firstName')?.touched && form.get('firstName')?.hasError('required')">
-      El nombre es obligatorio.
-    </ion-note>
+  <div class="register-container">
+    <div class="logo-area">
+      <div class="logo-icon">✨</div>
+      <h1 class="app-logo-text">Crea tu cuenta</h1>
+      <p class="logo-subtitle">Únete a ArmonIA para empezar a colaborar con tus compañeros de piso.</p>
+    </div>
 
-    <ion-item>
-      <ion-label position="stacked">Apellido</ion-label>
-      <ion-input formControlName="lastName"></ion-input>
-    </ion-item>
-    <ion-note slot="error" color="danger" *ngIf="form.get('lastName')?.touched && form.get('lastName')?.hasError('required')">
-      El apellido es obligatorio.
-    </ion-note>
+    <form [formGroup]="form" (ngSubmit)="register()">
+      <div class="input-group">
+        <ion-item>
+          <ion-label position="stacked">Nombre</ion-label>
+          <ion-input formControlName="firstName" placeholder="Tu nombre"></ion-input>
+        </ion-item>
+        <ion-note color="danger" *ngIf="form.get('firstName')?.touched && form.get('firstName')?.hasError('required')">
+          El nombre es obligatorio.
+        </ion-note>
+      </div>
 
-    <ion-item>
-      <ion-label position="stacked">Correo electrónico</ion-label>
-      <ion-input type="email" formControlName="email"></ion-input>
-    </ion-item>
-    <ion-note slot="error" color="danger" *ngIf="form.get('email')?.touched && form.get('email')?.hasError('email')">
-      Introduce un correo válido.
-    </ion-note>
-    <ion-note slot="error" color="danger" *ngIf="form.get('email')?.touched && form.get('email')?.hasError('required')">
-      El correo es obligatorio.
-    </ion-note>
+      <div class="input-group">
+        <ion-item>
+          <ion-label position="stacked">Apellido</ion-label>
+          <ion-input formControlName="lastName" placeholder="Tu apellido"></ion-input>
+        </ion-item>
+        <ion-note color="danger" *ngIf="form.get('lastName')?.touched && form.get('lastName')?.hasError('required')">
+          El apellido es obligatorio.
+        </ion-note>
+      </div>
 
-    <ion-item>
-      <ion-label position="stacked">Contraseña</ion-label>
-      <ion-input type="password" formControlName="password"></ion-input>
-    </ion-item>
-    <ion-note slot="error" color="danger" *ngIf="form.get('password')?.touched && form.get('password')?.hasError('required')">
-      La contraseña es obligatoria.
-    </ion-note>
-    <ion-note slot="error" color="danger" *ngIf="form.get('password')?.touched && form.get('password')?.hasError('minlength')">
-      La contraseña debe tener al menos 6 caracteres.
-    </ion-note>
+      <div class="input-group">
+        <ion-item>
+          <ion-label position="stacked">Correo electrónico</ion-label>
+          <ion-input type="email" formControlName="email" placeholder="tuemail@ejemplo.com"></ion-input>
+        </ion-item>
+        <ion-note color="danger" *ngIf="form.get('email')?.touched && form.get('email')?.hasError('email')">
+          Introduce un correo válido.
+        </ion-note>
+        <ion-note color="danger" *ngIf="form.get('email')?.touched && form.get('email')?.hasError('required')">
+          El correo es obligatorio.
+        </ion-note>
+      </div>
 
-    <ion-button expand="block" type="submit" [disabled]="loading">
-      {{ loading ? 'Registrando...' : 'Registrar' }}
-    </ion-button>
+      <div class="input-group">
+        <ion-item>
+          <ion-label position="stacked">Contraseña</ion-label>
+          <ion-input type="password" formControlName="password" placeholder="Mínimo 6 caracteres"></ion-input>
+        </ion-item>
+        <ion-note color="danger" *ngIf="form.get('password')?.touched && form.get('password')?.hasError('required')">
+          La contraseña es obligatoria.
+        </ion-note>
+        <ion-note color="danger" *ngIf="form.get('password')?.touched && form.get('password')?.hasError('minlength')">
+          La contraseña debe tener al menos 6 caracteres.
+        </ion-note>
+      </div>
 
-    <ion-text color="danger" *ngIf="error">
-      <p class="error-message">{{ error }}</p>
-    </ion-text>
-  </form>
+      <ion-button expand="block" type="submit" [disabled]="loading">
+        {{ loading ? 'Registrando...' : 'Registrar' }}
+      </ion-button>
 
-  <div class="login-link">
-    <p>¿Ya tienes cuenta? <a routerLink="/login">Inicia sesión</a></p>
+      <ion-text color="danger" *ngIf="error">
+        <p class="error-message">{{ error }}</p>
+      </ion-text>
+    </form>
+
+    <div class="login-link">
+      <p>¿Ya tienes cuenta? <a routerLink="/login">Inicia sesión</a></p>
+    </div>
   </div>
 </ion-content>

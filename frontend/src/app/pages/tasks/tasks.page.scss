@@ -1,18 +1,343 @@
-ion-card {
-  margin-bottom: 1rem;
+/* Streak Card (Racha de Armonía) */
+.racha-armonia-card {
+  background: #592C1D;
+  border-radius: 24px;
+  color: #FAF5F0;
+  padding: 12px;
+  text-align: center;
+  position: relative;
+  
+  .streak-badge {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background: rgba(250, 245, 240, 0.12);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 12px;
+    
+    ion-icon {
+      font-size: 20px;
+      color: #FAF5F0;
+    }
+  }
+  
+  .streak-label {
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: rgba(250, 245, 240, 0.65);
+    letter-spacing: 1.2px;
+    display: block;
+    margin-bottom: 6px;
+  }
+  
+  .streak-value {
+    font-size: 3.5rem;
+    font-weight: 800;
+    color: #FAF5F0;
+    margin: 0;
+    line-height: 1;
+  }
+  
+  .streak-title {
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: #FAF5F0;
+    margin: 8px 0 16px 0;
+  }
+  
+  .streak-quote {
+    font-size: 0.95rem;
+    font-style: italic;
+    color: rgba(250, 245, 240, 0.8);
+    margin: 0;
+  }
+}
+
+/* Tasks Checklist */
+.tasks-checklist {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 24px;
+}
+
+.task-check-card {
+  background: #FFFFFF;
   border-radius: 18px;
+  padding: 16px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: 0 4px 16px rgba(140, 115, 108, 0.04);
+  cursor: pointer;
+  transition: transform 0.15s ease, background 0.15s ease;
+  
+  &:active {
+    transform: scale(0.98);
+    background: #FAF5F0;
+  }
+  
+  .task-check-left {
+    display: flex;
+    align-items: center;
+  }
+  
+  .task-info {
+    h3 {
+      font-size: 0.98rem;
+      font-weight: 700;
+      color: #3E2319;
+      margin: 0 0 2px 0;
+    }
+    p {
+      font-size: 0.85rem;
+      color: #8C736C;
+      margin: 0 0 4px 0;
+    }
+  }
+  
+  .task-frequency-tag {
+    background: #FAF5F0;
+    color: #8C736C;
+    font-size: 0.75rem;
+    font-weight: 700;
+    padding: 2px 8px;
+    border-radius: 8px;
+    display: inline-block;
+  }
+  
+  .member-initial-circle {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: #F6EBE2;
+    color: #3E2319;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    font-weight: 700;
+    box-shadow: 0 2px 6px rgba(140, 115, 108, 0.1);
+    
+    &.unassigned {
+      background: #FAF5F0;
+      color: #8C736C;
+      border: 1px dashed #8C736C;
+    }
+  }
 }
 
-ion-item {
-  align-items: flex-start;
+/* Rotation Card Grid */
+.rotation-card {
+  background: #F6EBE2;
+  border-radius: 20px;
+  
+  .rotation-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+    padding: 16px;
+  }
+  
+  .rotation-box {
+    background: #FFFFFF;
+    border-radius: 14px;
+    padding: 12px;
+    box-shadow: 0 2px 8px rgba(140, 115, 108, 0.03);
+    
+    .rotation-title {
+      font-size: 0.72rem;
+      font-weight: 700;
+      color: #8C736C;
+      letter-spacing: 0.5px;
+      display: block;
+      margin-bottom: 8px;
+    }
+    
+    .rotation-assignee {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    
+    .assignee-avatar {
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      background: #592C1D;
+      color: #FAF5F0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 10px;
+      font-weight: 700;
+    }
+    
+    .assignee-name {
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: #3E2319;
+    }
+  }
 }
 
-ion-button {
-  margin-left: auto;
+/* Create Task Card Banner */
+.create-task-card {
+  .create-task-header-banner {
+    background: #F6EBE2;
+    padding: 20px;
+    
+    .banner-sub {
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: #9D4436;
+      letter-spacing: 1px;
+      display: block;
+      margin-bottom: 6px;
+    }
+    
+    .banner-title {
+      font-size: 1.4rem;
+      font-weight: 800;
+      color: #3E2319;
+      margin: 0 0 6px 0;
+    }
+    
+    .banner-desc {
+      font-size: 0.95rem;
+      color: #8C736C;
+      margin: 0;
+      line-height: 1.4;
+    }
+  }
 }
 
-.task-meta {
-  color: var(--ion-color-medium);
-  font-size: 0.85rem;
-  margin-top: 0.25rem;
+/* Form Helper Classes */
+.section-input-label {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #3E2319;
+  display: block;
+  margin-bottom: 8px;
+}
+
+/* Custom Frequency Selector Cards Grid */
+.frequency-section {
+  margin-top: 16px;
+  margin-bottom: 20px;
+}
+
+.frequency-cards {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+}
+
+.frequency-card {
+  background: #FAF5F0;
+  border-radius: 14px;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  border: 1px solid transparent;
+  transition: all 0.2s ease;
+  
+  ion-icon {
+    font-size: 24px;
+    color: #8C736C;
+    margin-bottom: 6px;
+  }
+  
+  span {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: #3E2319;
+  }
+  
+  &.active {
+    background: #592C1D;
+    border-color: #592C1D;
+    
+    ion-icon {
+      color: #FAF5F0;
+    }
+    span {
+      color: #FAF5F0;
+    }
+  }
+}
+
+/* Custom Responsible Selector */
+.responsible-section {
+  margin-top: 20px;
+  margin-bottom: 24px;
+}
+
+.responsible-avatars {
+  display: flex;
+  gap: 16px;
+  overflow-x: auto;
+  padding: 4px 0;
+  
+  .avatar-option {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    cursor: pointer;
+    flex-shrink: 0;
+    
+    .avatar-circle-icon {
+      width: 46px;
+      height: 46px;
+      border-radius: 50%;
+      background: #F6EBE2;
+      color: #3E2319;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
+      font-weight: 700;
+      border: 2px solid transparent;
+      box-shadow: 0 2px 8px rgba(140, 115, 108, 0.08);
+      transition: all 0.2s ease;
+      
+      &.unassigned {
+        background: #FAF5F0;
+        color: #8C736C;
+        border: 2px dashed #8C736C;
+        box-shadow: none;
+      }
+    }
+    
+    span {
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: #8C736C;
+    }
+    
+    &.active {
+      .avatar-circle-icon {
+        border-color: #592C1D;
+        background: #592C1D;
+        color: #FAF5F0;
+      }
+      span {
+        color: #3E2319;
+        font-weight: 700;
+      }
+    }
+  }
+}
+
+.asignar-tarea-btn {
+  --background: #592C1D;
+  --background-hover: #4e271a;
+  --background-activated: #4e271a;
+  margin-top: 16px;
 }

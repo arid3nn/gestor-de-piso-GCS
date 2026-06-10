@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<database>
+  <users>
+    <user id="u1">
+      <firstName>Carlos</firstName>
+      <lastName>García</lastName>
+      <email>carlos@example.com</email>
+      <password>password123</password>
+    </user>
+    <user id="u2">
+      <firstName>Sofía</firstName>
+      <lastName>Martín</lastName>
+      <email>sofia@example.com</email>
+      <password>password123</password>
+    </user>
+    <user id="u3">
+      <firstName>Alejandro</firstName>
+      <lastName>Ruiz</lastName>
+      <email>alejandro@example.com</email>
+      <password>password123</password>
+    </user>
+  </users>
+  <flats>
+    <flat id="f1">
+      <name>Piso de Estudiantes Sol</name>
+      <joinCode>SOL123</joinCode>
+      <members>
+        <member userId="u1" role="ADMIN" />
+        <member userId="u2" role="MEMBER" />
+        <member userId="u3" role="MEMBER" />
+      </members>
+    </flat>
+  </flats>
+  <tasks>
+    <task id="t1" flatId="f1">
+      <title>Sacar la basura</title>
+      <description>Depositar en los contenedores de reciclaje orgánico antes de las 22:00.</description>
+      <frequency>DAILY</frequency>
+      <dueDate>2026-06-11</dueDate>
+      <assignedToId>u1</assignedToId>
+      <completed>false</completed>
+    </task>
+    <task id="t2" flatId="f1">
+      <title>Limpieza profunda de la cocina</title>
+      <description>Barrer, fregar el suelo y limpiar la placa vitrocerámica.</description>
+      <frequency>WEEKLY</frequency>
+      <dueDate>2026-06-13</dueDate>
+      <assignedToId>u2</assignedToId>
+      <completed>false</completed>
+    </task>
+    <task id="t3" flatId="f1">
+      <title>Limpiar el cuarto de baño</title>
+      <description>Limpiar ducha, lavabo, espejo y desinfectar el inodoro.</description>
+      <frequency>WEEKLY</frequency>
+      <dueDate>2026-06-15</dueDate>
+      <assignedToId>u3</assignedToId>
+      <completed>false</completed>
+    </task>
+  </tasks>
+  <polls>
+    <poll id="p1" flatId="f1">
+      <question>¿Qué día de la semana compramos la comida grupal?</question>
+      <expiresAt>2026-06-18T23:59:59.000Z</expiresAt>
+      <options>
+        <option id="o1">Jueves por la tarde</option>
+        <option id="o2">Sábado por la mañana</option>
+      </options>
+      <votes>
+        <vote userId="u1" optionId="o1" />
+        <vote userId="u2" optionId="o2" />
+      </votes>
+    </poll>
+    <poll id="p2" flatId="f1">
+      <question>¿Compramos una freidora de aire para la cocina?</question>
+      <expiresAt>2026-06-25T12:00:00.000Z</expiresAt>
+      <options>
+        <option id="o3">Sí, todos la usaremos</option>
+        <option id="o4">No, no hay espacio</option>
+        <option id="o5">Me da igual</option>
+      </options>
+      <votes>
+        <vote userId="u1" optionId="o3" />
+      </votes>
+    </poll>
+  </polls>
+  <expenses>
+    <expense id="e1" flatId="f1">
+      <title>Productos de limpieza y papel higiénico</title>
+      <amount>24.60</amount>
+      <category>CLEANING</category>
+      <payerId>u1</payerId>
+      <splits>
+        <split userId="u1" amount="8.20" />
+        <split userId="u2" amount="8.20" />
+        <split userId="u3" amount="8.20" />
+      </splits>
+    </expense>
+    <expense id="e2" flatId="f1">
+      <title>Factura de Internet (Mayo)</title>
+      <amount>45.00</amount>
+      <category>UTILITIES</category>
+      <payerId>u2</payerId>
+      <splits>
+        <split userId="u1" amount="15.00" />
+        <split userId="u2" amount="15.00" />
+        <split userId="u3" amount="15.00" />
+      </splits>
+    </expense>
+  </expenses>
+</database>

@@ -1,123 +1,156 @@
-<ion-header>
+<ion-header class="ion-no-border">
   <ion-toolbar>
-    <ion-title>ArmonIA</ion-title>
-    <ion-buttons slot="end">
-      <ion-button (click)="logout()">Salir</ion-button>
-    </ion-buttons>
+    <div class="custom-header-content">
+      <div class="header-left">
+        <div class="avatar-circle">A</div>
+        <span class="header-app-name">ArmonIA</span>
+      </div>
+      <div class="header-right">
+        <ion-icon name="notifications-outline" class="bell-icon"></ion-icon>
+        <ion-icon name="log-out-outline" class="logout-icon" (click)="logout()"></ion-icon>
+      </div>
+    </div>
   </ion-toolbar>
 </ion-header>
 
 <ion-content class="ion-padding dashboard-page">
   <ng-container *ngIf="flats.length === 0 && !loading; else hasFlats">
-    <ion-card>
-      <ion-card-header>
-        <ion-card-title>Bienvenido</ion-card-title>
-        <ion-card-subtitle>Comienza creando o uniéndote a un piso</ion-card-subtitle>
-      </ion-card-header>
-      <ion-card-content>
-        <p>Para empezar a gestionar tu piso compartido, crea uno nuevo o únete con un código.</p>
-        <ion-button expand="block" fill="solid" (click)="goToSetup()" size="large">
-          Crear o Unirse a Piso
-        </ion-button>
-      </ion-card-content>
-    </ion-card>
+    <div class="welcome-container">
+      <div class="welcome-icon">🏠</div>
+      <h1 class="page-title">¡Bienvenido!</h1>
+      <p class="page-subtitle">Comienza creando o uniéndote a un piso compartido para sincronizar tareas y gastos.</p>
+      
+      <ion-card class="setup-card">
+        <ion-card-content>
+          <ion-button expand="block" fill="solid" (click)="goToSetup()">
+            Crear o Unirse a Piso
+          </ion-button>
+        </ion-card-content>
+      </ion-card>
+    </div>
 
     <ion-text color="danger" *ngIf="error">
-      <p>{{ error }}</p>
+      <p class="error-message">{{ error }}</p>
     </ion-text>
   </ng-container>
 
   <ng-template #hasFlats>
-    <ion-card class="flat-card">
+    <div class="dashboard-header-intro">
+      <h1 class="page-title">¡Hola de nuevo!</h1>
+      <p class="page-subtitle">Todo fluye en casa. Aquí tienes un vistazo rápido al estado de tu hogar hoy.</p>
+    </div>
+
+    <ion-card class="flat-selector-card">
       <ion-card-header>
-        <ion-card-title>Selecciona tu piso</ion-card-title>
-        <ion-card-subtitle>Gestiona tu hogar y revisa el estado en un vistazo</ion-card-subtitle>
+        <ion-card-title>Mis Pisos</ion-card-title>
+        <ion-card-subtitle>Selecciona el piso activo que deseas gestionar</ion-card-subtitle>
       </ion-card-header>
-
-      <ion-card-content>
-        <ion-button expand="block" fill="solid" (click)="goToSetup()">Crear / Unirse</ion-button>
-      </ion-card-content>
-
-      <ion-list>
-        <ion-item *ngFor="let flat of flats" [detail]="true" (click)="selectFlat(flat.id || flat.flat?.id)" [class.selected]="selectedFlatId === (flat.id || flat.flat?.id)">
-          <ion-label>
-            <h2>{{ flat.flat.name || flat.name }}</h2>
-            <p>{{ flat.flat._count?.members || flat._count?.members }} miembros</p>
-          </ion-label>
-          <ion-badge *ngIf="selectedFlatId === (flat.id || flat.flat?.id)" color="primary">Seleccionado</ion-badge>
+      
+      <ion-list class="flat-list-items">
+        <ion-item *ngFor="let flat of flats" (click)="selectFlat(flat.id || flat.flat?.id)" [class.selected]="selectedFlatId === (flat.id || flat.flat?.id)">
+          <div class="flat-item-content">
+            <div class="flat-icon-box">🏢</div>
+            <div class="flat-text-box">
+              <h3>{{ flat.name || flat.flat?.name }}</h3>
+              <p>{{ flat.members?.length || flat.flat?.members?.length || 0 }} miembros</p>
+            </div>
+          </div>
+          <ion-badge slot="end" *ngIf="selectedFlatId === (flat.id || flat.flat?.id)">Activo</ion-badge>
         </ion-item>
       </ion-list>
-
-      <ion-text color="danger" *ngIf="error">
-        <p>{{ error }}</p>
-      </ion-text>
+      
+      <div class="setup-btn-container">
+        <ion-button fill="outline" expand="block" size="small" (click)="goToSetup()">
+          + Crear / Unirse a otro piso
+        </ion-button>
+      </div>
     </ion-card>
 
     <ng-container *ngIf="selectedFlatId; else noFlat">
-      <ion-card class="status-card">
-        <ion-card-header>
-          <ion-card-title>Armonía del Hogar</ion-card-title>
-        </ion-card-header>
-        <div class="score-block">
-          <div class="score-circle">
-            <span>{{ harmonyScore }}%</span>
+      <!-- Harmony score circle card -->
+      <ion-card class="harmony-score-card">
+        <ion-card-content>
+          <h2 class="card-section-title">Armonía del Hogar</h2>
+          <div class="harmony-container">
+            <div class="harmony-circle-progress">
+              <div class="harmony-inner-circle">
+                <span class="harmony-percentage">{{ harmonyScore }}%</span>
+                <span class="harmony-status">EXCELENTE</span>
+              </div>
+            </div>
+            <p class="harmony-footer-text">
+              <span *ngIf="tasks.length === 0">¡Estás en racha! Todas las tareas completadas hoy.</span>
+              <span *ngIf="tasks.length > 0">¡Estás en racha! Tienes {{ tasks.length }} tareas pendientes hoy.</span>
+            </p>
           </div>
-          <div class="score-text">
-            <p>Excelente</p>
-            <p>Estás a punto de alcanzar un hogar equilibrado.</p>
-          </div>
-        </div>
+        </ion-card-content>
       </ion-card>
 
-      <ion-card class="summary-card">
-        <ion-card-header>
-          <ion-card-title>Tareas para hoy</ion-card-title>
-        </ion-card-header>
-        <ion-list>
-          <ion-item *ngFor="let task of tasks">
-            <ion-label>
+      <!-- Pending Tasks List -->
+      <div class="section-header">
+        <h2 class="section-title">Tareas para hoy</h2>
+        <ion-badge>{{ tasks.length }} Pendientes</ion-badge>
+      </div>
+
+      <div class="dashboard-tasks-list">
+        <div class="task-card-item" *ngFor="let task of tasks" routerLink="/tabs/tasks">
+          <div class="task-left">
+            <div class="circle-checkbox"></div>
+            <div class="task-details">
               <h3>{{ task.title }}</h3>
               <p>Asignada a {{ task.assignedToName }}</p>
-            </ion-label>
-            <ion-note slot="end" color="medium">{{ task.dueDate ? (task.dueDate | date:'dd MMM') : 'Sin fecha' }}</ion-note>
-          </ion-item>
-          <ion-item *ngIf="tasks.length === 0">
-            <ion-label>No hay tareas activas.</ion-label>
-          </ion-item>
-        </ion-list>
-      </ion-card>
+            </div>
+          </div>
+          <div class="task-right" *ngIf="task.dueDate">
+            <span class="task-due-date">{{ task.dueDate | date:'dd MMM' }}</span>
+          </div>
+        </div>
+        
+        <div class="empty-state-card" *ngIf="tasks.length === 0">
+          <p>No tienes tareas pendientes para hoy. ¡Buen trabajo!</p>
+        </div>
+      </div>
 
-      <ion-card class="summary-card">
-        <ion-card-header>
-          <ion-card-title>Gastos pendientes</ion-card-title>
-        </ion-card-header>
-        <ion-list>
-          <ion-item *ngFor="let expense of pendingExpenses.slice(0, 3)">
-            <ion-label>
-              <h3>{{ expense.fromName }} → {{ expense.toName }}</h3>
-              <p>{{ expense.amount | currency:'EUR' }}</p>
-            </ion-label>
-          </ion-item>
-          <ion-item *ngIf="pendingExpenses.length === 0">
-            <ion-label>No hay deudas pendientes.</ion-label>
-          </ion-item>
-        </ion-list>
-        <ion-button expand="block" fill="solid" routerLink="/tabs/expenses">Ver todos</ion-button>
-      </ion-card>
+      <!-- Pending Expenses List -->
+      <div class="section-header">
+        <h2 class="section-title">Gastos Pendientes</h2>
+        <a routerLink="/tabs/expenses" class="ver-todo-link">Ver todo →</a>
+      </div>
+
+      <div class="dashboard-expenses-list">
+        <div class="expense-card-item" *ngFor="let expense of pendingExpenses.slice(0, 3)">
+          <div class="expense-top">
+            <div class="expense-category-icon">⚡</div>
+            <div class="expense-badge-due">Vence hoy</div>
+          </div>
+          
+          <div class="expense-amount-box">
+            <h2 class="expense-amount">{{ expense.amount | currency:'EUR' }}</h2>
+            <p class="expense-description">{{ expense.fromName }} → {{ expense.toName }}</p>
+          </div>
+          
+          <ion-button expand="block" class="saldar-btn" routerLink="/tabs/expenses">
+            Saldar ahora
+          </ion-button>
+        </div>
+
+        <div class="empty-state-card" *ngIf="pendingExpenses.length === 0">
+          <p>No hay deudas pendientes en tu piso.</p>
+        </div>
+      </div>
     </ng-container>
 
     <ng-template #noFlat>
-      <ion-card>
-        <ion-card-header>
-          <ion-card-title>Selecciona un piso</ion-card-title>
-        </ion-card-header>
-        <ion-card-content>
-          Elige un piso para ver el resumen de tu hogar.
-        </ion-card-content>
-        <ion-card-content>
-          <ion-button expand="block" fill="solid" (click)="goToSetup()">Crear / Unirse</ion-button>
-        </ion-card-content>
-      </ion-card>
+      <div class="select-flat-prompt">
+        <ion-card>
+          <ion-card-header>
+            <ion-card-title>Selecciona un piso</ion-card-title>
+          </ion-card-header>
+          <ion-card-content>
+            <p>Elige uno de tus pisos de la lista superior para ver su balance, tareas y votaciones activas.</p>
+          </ion-card-content>
+        </ion-card>
+      </div>
     </ng-template>
   </ng-template>
 </ion-content>

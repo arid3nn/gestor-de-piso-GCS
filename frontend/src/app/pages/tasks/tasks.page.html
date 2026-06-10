@@ -1,92 +1,205 @@
-<ion-header>
+<ion-header class="ion-no-border">
   <ion-toolbar>
-    <ion-title>Tareas</ion-title>
+    <div class="custom-header-content">
+      <div class="header-left">
+        <div class="avatar-circle">T</div>
+        <span class="header-app-name">Tareas del Hogar</span>
+      </div>
+      <div class="header-right">
+        <ion-icon name="notifications-outline" class="bell-icon"></ion-icon>
+      </div>
+    </div>
   </ion-toolbar>
 </ion-header>
 
 <ion-content class="ion-padding tasks-page">
+  <div class="page-header-intro">
+    <h1 class="page-title">Tareas del Hogar</h1>
+    <p class="page-subtitle">Sincroniza y colabora en las actividades del día a día.</p>
+  </div>
+
   <ng-container *ngIf="selectedFlatId; else noFlat">
-    <ion-card>
-      <ion-card-header>
-        <ion-card-title>Crear tarea</ion-card-title>
-      </ion-card-header>
-      <form [formGroup]="taskForm" (ngSubmit)="createTask()">
-        <ion-item>
-          <ion-label position="stacked">Título</ion-label>
-          <ion-input formControlName="title" placeholder="Ej. Sacar la basura"></ion-input>
-        </ion-item>
-        <ion-note slot="error" color="danger" *ngIf="taskForm.get('title')?.touched && taskForm.get('title')?.hasError('required')">
-          El título es obligatorio.
-        </ion-note>
-
-        <ion-item>
-          <ion-label position="stacked">Descripción</ion-label>
-          <ion-textarea formControlName="description" placeholder="Detalles de la tarea"></ion-textarea>
-        </ion-item>
-
-        <ion-item>
-          <ion-label position="stacked">Frecuencia</ion-label>
-          <ion-select formControlName="frequency">
-            <ion-select-option *ngFor="let option of frequencyOptions" [value]="option.value">{{ option.label }}</ion-select-option>
-          </ion-select>
-        </ion-item>
-
-        <ion-item>
-          <ion-label position="stacked">Fecha de vencimiento</ion-label>
-          <ion-datetime displayFormat="DD MMM" pickerFormat="DD MMM YYYY" formControlName="dueDate"></ion-datetime>
-        </ion-item>
-
-        <ion-item>
-          <ion-label position="stacked">Asignar a</ion-label>
-          <ion-select formControlName="assignedToId">
-            <ion-select-option value="">Sin asignar</ion-select-option>
-            <ion-select-option *ngFor="let member of members" [value]="member.userId">
-              {{ member.firstName }} {{ member.lastName }}
-            </ion-select-option>
-          </ion-select>
-        </ion-item>
-
-        <ion-button expand="block" type="submit" [disabled]="creating">
-          {{ creating ? 'Guardando...' : 'Asignar tarea' }}
-        </ion-button>
-      </form>
+    <!-- Racha de Armonía Card matching Figma -->
+    <ion-card class="racha-armonia-card">
+      <ion-card-content>
+        <div class="streak-badge">
+          <ion-icon name="sparkles"></ion-icon>
+        </div>
+        <span class="streak-label">RACHA DE ARMONÍA</span>
+        <h1 class="streak-value">15</h1>
+        <h2 class="streak-title">Días en Equilibrio</h2>
+        <p class="streak-quote">"La paz del hogar se construye cada día."</p>
+      </ion-card-content>
     </ion-card>
 
-    <ion-card>
-      <ion-card-header>
-        <ion-card-title>Tareas pendientes</ion-card-title>
-      </ion-card-header>
-      <ion-list>
-        <ion-item *ngFor="let task of tasks">
-          <ion-label>
+    <!-- Tareas Pendientes Checklist -->
+    <div class="section-header">
+      <h2 class="section-title">Tareas Pendientes</h2>
+      <ion-badge>{{ tasks.length }} tareas hoy</ion-badge>
+    </div>
+
+    <div class="tasks-checklist">
+      <div class="task-check-card" *ngFor="let task of tasks" (click)="completeTask(task.id)">
+        <div class="task-check-left">
+          <div class="circle-checkbox" [class.checked]="task.completed"></div>
+          <div class="task-info">
             <h3>{{ task.title }}</h3>
             <p>{{ task.description || 'Sin descripción' }}</p>
-            <p class="task-meta">{{ task.assignedTo?.firstName || 'Sin asignar' }} · {{ task.frequency }}</p>
-            <p *ngIf="task.dueDate">Vence {{ task.dueDate | date:'dd MMM' }}</p>
-          </ion-label>
-          <ion-button fill="outline" size="small" (click)="completeTask(task.id)">
-            Completar
-          </ion-button>
-        </ion-item>
-        <ion-item *ngIf="tasks.length === 0">
-          <ion-label>No hay tareas activas.</ion-label>
-        </ion-item>
-      </ion-list>
+            <span class="task-frequency-tag">{{ task.frequency }}</span>
+          </div>
+        </div>
+        <div class="task-check-right">
+          <!-- Assignee avatar -->
+          <div class="member-initial-circle" *ngIf="task.assignedTo">
+            {{ task.assignedTo.firstName.substring(0, 1) }}
+          </div>
+          <div class="member-initial-circle unassigned" *ngIf="!task.assignedTo">
+            ?
+          </div>
+        </div>
+      </div>
+      
+      <div class="empty-state-card" *ngIf="tasks.length === 0">
+        <p>¡Todo limpio! No hay tareas pendientes en este momento.</p>
+      </div>
+    </div>
+
+    <!-- Rotación de Próxima Semana matching Figma layout -->
+    <div class="section-header">
+      <h2 class="section-title">Rotación de Próxima Semana</h2>
+    </div>
+
+    <ion-card class="rotation-card" *ngIf="members.length > 0">
+      <ion-card-content class="rotation-grid">
+        <div class="rotation-box" *ngIf="members[0]">
+          <span class="rotation-title">LIMPIEZA GENERAL</span>
+          <div class="rotation-assignee">
+            <span class="assignee-avatar">{{ members[0].firstName.substring(0, 1) }}</span>
+            <span class="assignee-name">{{ members[0].firstName }}</span>
+          </div>
+        </div>
+        <div class="rotation-box" *ngIf="members[1]">
+          <span class="rotation-title">BAÑO PRINCIPAL</span>
+          <div class="rotation-assignee">
+            <span class="assignee-avatar">{{ members[1].firstName.substring(0, 1) }}</span>
+            <span class="assignee-name">{{ members[1].firstName }}</span>
+          </div>
+        </div>
+        <div class="rotation-box" *ngIf="members[2]">
+          <span class="rotation-title">COMPRAS</span>
+          <div class="rotation-assignee">
+            <span class="assignee-avatar">{{ members[2].firstName.substring(0, 1) }}</span>
+            <span class="assignee-name">{{ members[2].firstName }}</span>
+          </div>
+        </div>
+        <div class="rotation-box" *ngIf="members[3]">
+          <span class="rotation-title">LAVANDERÍA</span>
+          <div class="rotation-assignee">
+            <span class="assignee-avatar">{{ members[3].firstName.substring(0, 1) }}</span>
+            <span class="assignee-name">{{ members[3].firstName }}</span>
+          </div>
+        </div>
+      </ion-card-content>
     </ion-card>
 
-    <ion-text color="danger" *ngIf="error">
-      <p>{{ error }}</p>
-    </ion-text>
+    <!-- Crear Tarea Form Card -->
+    <div class="section-header">
+      <h2 class="section-title">Asignar Nueva Tarea</h2>
+    </div>
+
+    <ion-card class="create-task-card">
+      <div class="create-task-header-banner">
+        <span class="banner-sub">NUEVO EVENTO</span>
+        <h2 class="banner-title">Equilibrio en casa</h2>
+        <p class="banner-desc">Define una nueva actividad para mantener la armonía del hogar.</p>
+      </div>
+
+      <ion-card-content>
+        <form [formGroup]="taskForm" (ngSubmit)="createTask()">
+          <div class="input-group">
+            <ion-item>
+              <ion-label position="stacked">¿Qué tarea hay que hacer?</ion-label>
+              <ion-input formControlName="title" placeholder="Ej. Sacar la basura"></ion-input>
+            </ion-item>
+            <ion-note color="danger" *ngIf="taskForm.get('title')?.touched && taskForm.get('title')?.hasError('required')">
+              El título es obligatorio.
+            </ion-note>
+          </div>
+
+          <div class="input-group">
+            <ion-item>
+              <ion-label position="stacked">Descripción (opcional)</ion-label>
+              <ion-textarea formControlName="description" placeholder="Agrega instrucciones o detalles"></ion-textarea>
+            </ion-item>
+          </div>
+
+          <!-- Custom Frequency Cards Selector matching Figma -->
+          <div class="frequency-section">
+            <span class="section-input-label">Frecuencia</span>
+            <div class="frequency-cards">
+              <div class="frequency-card" [class.active]="taskForm.get('frequency')?.value === 'DAILY'" (click)="taskForm.get('frequency')?.setValue('DAILY')">
+                <ion-icon name="calendar-clear-outline"></ion-icon>
+                <span>Diaria</span>
+              </div>
+              <div class="frequency-card" [class.active]="taskForm.get('frequency')?.value === 'WEEKLY'" (click)="taskForm.get('frequency')?.setValue('WEEKLY')">
+                <ion-icon name="calendar-outline"></ion-icon>
+                <span>Semanal</span>
+              </div>
+              <div class="frequency-card" [class.active]="taskForm.get('frequency')?.value === 'MONTHLY'" (click)="taskForm.get('frequency')?.setValue('MONTHLY')">
+                <ion-icon name="calendar-number-outline"></ion-icon>
+                <span>Mensual</span>
+              </div>
+              <div class="frequency-card" [class.active]="taskForm.get('frequency')?.value === 'ONCE'" (click)="taskForm.get('frequency')?.setValue('ONCE')">
+                <ion-icon name="ellipsis-horizontal-outline"></ion-icon>
+                <span>Única</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="input-group">
+            <ion-item>
+              <ion-label position="stacked">Fecha de vencimiento</ion-label>
+              <ion-datetime displayFormat="DD MMM" pickerFormat="DD MMM YYYY" formControlName="dueDate" placeholder="Elige una fecha"></ion-datetime>
+            </ion-item>
+          </div>
+
+          <!-- Custom Responsible Avatar Selector matching Figma -->
+          <div class="responsible-section">
+            <span class="section-input-label">Responsable inicial</span>
+            <div class="responsible-avatars">
+              <div class="avatar-option" [class.active]="taskForm.get('assignedToId')?.value === ''" (click)="taskForm.get('assignedToId')?.setValue('')">
+                <div class="avatar-circle-icon unassigned">👤</div>
+                <span>Sin asignar</span>
+              </div>
+              <div class="avatar-option" *ngFor="let member of members" [class.active]="taskForm.get('assignedToId')?.value === member.userId" (click)="taskForm.get('assignedToId')?.setValue(member.userId)">
+                <div class="avatar-circle-icon">{{ member.firstName.substring(0, 1) }}</div>
+                <span>{{ member.firstName }}</span>
+              </div>
+            </div>
+          </div>
+
+          <ion-button expand="block" type="submit" [disabled]="creating" class="asignar-tarea-btn">
+            {{ creating ? 'Guardando...' : 'Asignar Tarea' }}
+          </ion-button>
+        </form>
+
+        <ion-text color="danger" *ngIf="error">
+          <p class="error-message">{{ error }}</p>
+        </ion-text>
+      </ion-card-content>
+    </ion-card>
   </ng-container>
 
   <ng-template #noFlat>
-    <ion-card>
-      <ion-card-header>
-        <ion-card-title>Selecciona un piso</ion-card-title>
-      </ion-card-header>
-      <ion-card-content>
-        Elige un piso en la pantalla de inicio para ver y gestionar tareas.
-      </ion-card-content>
-    </ion-card>
+    <div class="select-flat-prompt">
+      <ion-card>
+        <ion-card-header>
+          <ion-card-title>Selecciona un piso</ion-card-title>
+        </ion-card-header>
+        <ion-card-content>
+          Elige un piso en la pantalla de inicio para ver y gestionar tareas.
+        </ion-card-content>
+      </ion-card>
+    </div>
   </ng-template>
 </ion-content>

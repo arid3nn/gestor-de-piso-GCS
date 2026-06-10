@@ -1,7 +1,315 @@
-ion-card {
-  margin-bottom: 1rem;
+/* Balance Summary Card */
+.balance-summary-card {
+  background: #592C1D;
+  border-radius: 24px;
+  color: #FAF5F0;
+  padding: 8px;
+  
+  .balance-label {
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: rgba(250, 245, 240, 0.65);
+    letter-spacing: 1.2px;
+    display: block;
+    margin-bottom: 8px;
+  }
+  
+  .balance-value {
+    font-size: 2.8rem;
+    font-weight: 800;
+    color: #FAF5F0;
+    margin: 0 0 16px 0;
+  }
+  
+  .balance-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-top: 1px solid rgba(250, 245, 240, 0.15);
+    padding-top: 16px;
+  }
+  
+  .footer-label {
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: rgba(250, 245, 240, 0.6);
+    display: block;
+    margin-bottom: 2px;
+    letter-spacing: 0.8px;
+  }
+  
+  .footer-value {
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: #FAF5F0;
+  }
+  
+  .armonia-badge {
+    background: rgba(250, 245, 240, 0.12);
+    color: #FAF5F0;
+    padding: 6px 14px;
+    border-radius: 14px;
+    font-size: 0.8rem;
+    font-weight: 600;
+  }
 }
 
-ion-label h3 {
-  font-weight: 600;
+/* Pending Debts (Cuentas Pendientes) */
+.balances-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 24px;
+}
+
+.balance-card-item {
+  background: #FFFFFF;
+  border-radius: 18px;
+  padding: 16px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: 0 4px 16px rgba(140, 115, 108, 0.04);
+  
+  .balance-left {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  
+  .balance-avatar-box {
+    width: 40px;
+    height: 40px;
+    border-radius: 12px;
+    background: #F6EBE2;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #3E2319;
+    font-size: 18px;
+  }
+  
+  .balance-info {
+    h3 {
+      font-size: 1rem;
+      font-weight: 700;
+      color: #3E2319;
+      margin: 0 0 2px 0;
+    }
+    p {
+      font-size: 0.85rem;
+      color: #8C736C;
+      margin: 0;
+    }
+  }
+  
+  .balance-right {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 4px;
+    
+    .balance-amount {
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: #3E2319;
+    }
+    
+    .balance-action-link {
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: #9D4436;
+      cursor: pointer;
+      letter-spacing: 0.5px;
+      
+      &:hover {
+        text-decoration: underline;
+      }
+    }
+  }
+}
+
+/* Nuevo Gasto Custom Splitting */
+.split-type-section {
+  margin-top: 20px;
+  margin-bottom: 20px;
+  
+  .split-type-label {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: #3E2319;
+    display: block;
+    margin-bottom: 8px;
+  }
+  
+  .split-type-pills {
+    display: flex;
+    gap: 12px;
+  }
+  
+  .split-pill {
+    padding: 8px 20px;
+    border-radius: 14px;
+    background: #F6EBE2;
+    color: #3E2319;
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    
+    &.active {
+      background: #592C1D;
+      color: #FAF5F0;
+    }
+  }
+}
+
+.splits-preview-section {
+  background: #FAF5F0;
+  border-radius: 16px;
+  padding: 16px;
+  margin-bottom: 20px;
+  
+  .splits-preview-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+    
+    .splits-title {
+      font-size: 0.9rem;
+      font-weight: 700;
+      color: #3E2319;
+    }
+  }
+  
+  .splits-preview-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  
+  .split-preview-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    
+    .split-preview-left {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 0.9rem;
+      color: #3E2319;
+      font-weight: 500;
+    }
+    
+    .split-avatar {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      background: #EEDCD0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 11px;
+      font-weight: 700;
+      color: #3E2319;
+    }
+    
+    .split-preview-amount {
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: #3E2319;
+    }
+  }
+}
+
+.guardar-gasto-btn {
+  --background: #592C1D;
+  --background-hover: #4e271a;
+  --background-activated: #4e271a;
+  margin-top: 24px;
+}
+
+/* Recent Transactions (Transacciones Recientes) */
+.transactions-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 30px;
+}
+
+.transaction-card-item {
+  background: #FFFFFF;
+  border-radius: 18px;
+  padding: 16px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: 0 4px 16px rgba(140, 115, 108, 0.04);
+  
+  .transaction-left {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  
+  .transaction-icon-box {
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+    background: #F6EBE2;
+    color: #3E2319;
+    
+    &.CLEANING {
+      background: #E2F0D9;
+    }
+    &.GROCERIES {
+      background: #FFF2CC;
+    }
+    &.RENT {
+      background: #F8CBAD;
+    }
+    &.UTILITIES {
+      background: #DDEBF7;
+    }
+  }
+  
+  .transaction-info {
+    h3 {
+      font-size: 0.98rem;
+      font-weight: 700;
+      color: #3E2319;
+      margin: 0 0 2px 0;
+    }
+    p {
+      font-size: 0.82rem;
+      color: #8C736C;
+      margin: 0;
+    }
+  }
+  
+  .transaction-right {
+    .transaction-amount {
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: #9D4436; /* Red-orange color for negative values/costs */
+    }
+  }
+}
+
+.success-message {
+  margin-top: 1rem;
+  color: #2e7d32;
+  font-weight: 500;
+  text-align: center;
+}
+
+.error-message {
+  margin-top: 1rem;
+  text-align: center;
 }

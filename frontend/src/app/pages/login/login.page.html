@@ -1,32 +1,38 @@
-<ion-header>
-  <ion-toolbar>
-    <ion-title>Acceder</ion-title>
-  </ion-toolbar>
-</ion-header>
-
 <ion-content class="ion-padding">
-  <form [formGroup]="form" (ngSubmit)="login()">
-    <ion-item>
-      <ion-label position="stacked">Correo electrónico</ion-label>
-      <ion-input type="email" formControlName="email" required></ion-input>
-    </ion-item>
+  <div class="login-container">
+    <div class="logo-area">
+      <div class="logo-icon">🏠</div>
+      <h1 class="app-logo-text">ArmonIA</h1>
+      <p class="logo-subtitle">Todo fluye en casa. Gestiona tu hogar compartido con facilidad.</p>
+    </div>
 
-    <ion-item>
-      <ion-label position="stacked">Contraseña</ion-label>
-      <ion-input type="password" formControlName="password" required></ion-input>
-    </ion-item>
+    <form [formGroup]="form" (ngSubmit)="login()">
+      <div class="input-group">
+        <ion-item>
+          <ion-label position="stacked">Correo electrónico</ion-label>
+          <ion-input type="email" formControlName="email" required placeholder="tuemail@ejemplo.com"></ion-input>
+        </ion-item>
+      </div>
 
-    <ion-button expand="block" type="submit" [disabled]="loading">
-      {{ loading ? 'Entrando...' : 'Entrar' }}
-    </ion-button>
+      <div class="input-group">
+        <ion-item>
+          <ion-label position="stacked">Contraseña</ion-label>
+          <ion-input type="password" formControlName="password" required placeholder="••••••••"></ion-input>
+        </ion-item>
+      </div>
 
-    <ion-text color="danger" *ngIf="error">
-      <p class="error-message">{{ error }}</p>
-    </ion-text>
-  </form>
+      <ion-button expand="block" type="submit" [disabled]="loading">
+        {{ loading ? 'Entrando...' : 'Entrar' }}
+      </ion-button>
 
-  <div class="register-link">
-    <p>¿No tienes cuenta?</p>
-    <ion-button fill="clear" routerLink="/register" routerDirection="forward">Regístrate</ion-button>
+      <ion-text color="danger" *ngIf="error">
+        <p class="error-message">{{ error }}</p>
+      </ion-text>
+    </form>
+
+    <div class="register-link">
+      <p>¿No tienes cuenta?</p>
+      <ion-button fill="clear" routerLink="/register" routerDirection="forward">Regístrate</ion-button>
+    </div>
   </div>
 </ion-content>

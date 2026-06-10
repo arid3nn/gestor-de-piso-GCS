@@ -1,92 +1,197 @@
-<ion-header>
+<ion-header class="ion-no-border">
   <ion-toolbar>
-    <ion-title>Libro Contable</ion-title>
+    <div class="custom-header-content">
+      <div class="header-left">
+        <div class="avatar-circle">E</div>
+        <span class="header-app-name">Libro Contable</span>
+      </div>
+      <div class="header-right">
+        <ion-icon name="notifications-outline" class="bell-icon"></ion-icon>
+      </div>
+    </div>
   </ion-toolbar>
 </ion-header>
 
-<ion-content class="ion-padding">
+<ion-content class="ion-padding expenses-page">
+  <div class="page-header-intro">
+    <h1 class="page-title">Libro Contable</h1>
+    <p class="page-subtitle">Gestiona el equilibrio financiero de tu hogar.</p>
+  </div>
+
   <ng-container *ngIf="selectedFlatId; else noFlat">
-    <ion-card>
-      <ion-card-header>
-        <ion-card-title>Nuevo gasto</ion-card-title>
-      </ion-card-header>
-      <form [formGroup]="expenseForm" (ngSubmit)="createExpense()">
-        <ion-item>
-          <ion-label position="stacked">Descripción</ion-label>
-          <ion-input formControlName="title" placeholder="Ej. Compra semanal"></ion-input>
-        </ion-item>
-        <ion-note slot="error" color="danger" *ngIf="expenseForm.get('title')?.touched && expenseForm.get('title')?.hasError('required')">
-          La descripción es obligatoria.
-        </ion-note>
-
-        <ion-item>
-          <ion-label position="stacked">Importe</ion-label>
-          <ion-input type="number" formControlName="amount" placeholder="0.00"></ion-input>
-        </ion-item>
-        <ion-note slot="error" color="danger" *ngIf="expenseForm.get('amount')?.touched && expenseForm.get('amount')?.hasError('required')">
-          El importe es obligatorio.
-        </ion-note>
-        <ion-note slot="error" color="danger" *ngIf="expenseForm.get('amount')?.touched && expenseForm.get('amount')?.hasError('min')">
-          El importe debe ser mayor que 0.
-        </ion-note>
-
-        <ion-item>
-          <ion-label position="stacked">Categoría</ion-label>
-          <ion-select formControlName="category">
-            <ion-select-option *ngFor="let category of categories" [value]="category.value">{{ category.label }}</ion-select-option>
-          </ion-select>
-        </ion-item>
-
-        <ion-button expand="block" type="submit" [disabled]="creating">
-          {{ creating ? 'Guardando...' : 'Registrar gasto' }}
-        </ion-button>
-      </form>
-
-      <ion-text color="success" *ngIf="successMessage">
-        <p>{{ successMessage }}</p>
-      </ion-text>
-      <ion-text color="danger" *ngIf="error">
-        <p>{{ error }}</p>
-      </ion-text>
+    <!-- Big Balance Summary Card -->
+    <ion-card class="balance-summary-card">
+      <ion-card-content>
+        <span class="balance-label">BALANCE TOTAL</span>
+        <h1 class="balance-value">{{ balanceTotal >= 0 ? '+' : '' }}{{ balanceTotal | currency:'EUR' }}</h1>
+        <div class="balance-footer">
+          <div class="footer-item">
+            <span class="footer-label">GASTOS ESTE MES</span>
+            <span class="footer-value">{{ monthlyExpenses | currency:'EUR' }}</span>
+          </div>
+          <span class="armonia-badge">✓ En armonía</span>
+        </div>
+      </ion-card-content>
     </ion-card>
 
-    <ion-card *ngIf="balances.length > 0">
+    <!-- Cuentas Pendientes (Balances) -->
+    <div class="section-header">
+      <h2 class="section-title">Cuentas Pendientes</h2>
+    </div>
+
+    <div class="balances-list">
+      <div class="balance-card-item" *ngFor="let balance of balances">
+        <div class="balance-left">
+          <div class="balance-avatar-box">
+            <ion-icon name="person-outline"></ion-icon>
+          </div>
+          <div class="balance-info">
+            <h3>{{ balance.fromName }}</h3>
+            <p>debe a {{ balance.toName }}</p>
+          </div>
+        </div>
+        <div class="balance-right">
+          <span class="balance-amount">{{ balance.amount | currency:'EUR' }}</span>
+          <span class="balance-action-link">PAGAR AHORA</span>
+        </div>
+      </div>
+      
+      <div class="empty-state-card" *ngIf="balances.length === 0">
+        <p>No hay saldos pendientes entre los miembros.</p>
+      </div>
+    </div>
+
+    <!-- Nuevo Gasto Card -->
+    <div class="section-header">
+      <h2 class="section-title">Nuevo Gasto</h2>
+    </div>
+
+    <ion-card class="nuevo-gasto-card">
       <ion-card-header>
-        <ion-card-title>Balances</ion-card-title>
+        <ion-card-title>Registrar Gasto</ion-card-title>
+        <ion-card-subtitle>Registra los gastos compartidos del hogar.</ion-card-subtitle>
       </ion-card-header>
-      <ion-list>
-        <ion-item *ngFor="let balance of balances">
-          <ion-label>
-            <h3>{{ balance.fromName }} → {{ balance.toName }}</h3>
-            <p>{{ balance.amount | currency:'EUR' }}</p>
-          </ion-label>
-        </ion-item>
-      </ion-list>
+
+      <ion-card-content>
+        <form [formGroup]="expenseForm" (ngSubmit)="createExpense()">
+          <div class="input-group">
+            <ion-item>
+              <ion-label position="stacked">¿En qué se gastó?</ion-label>
+              <ion-input formControlName="title" placeholder="Ej. Compra semanal Mercadona"></ion-input>
+            </ion-item>
+            <ion-note color="danger" *ngIf="expenseForm.get('title')?.touched && expenseForm.get('title')?.hasError('required')">
+              La descripción es obligatoria.
+            </ion-note>
+          </div>
+
+          <div class="input-group">
+            <ion-item>
+              <ion-label position="stacked">Importe (€)</ion-label>
+              <ion-input type="number" formControlName="amount" placeholder="0.00"></ion-input>
+            </ion-item>
+            <ion-note color="danger" *ngIf="expenseForm.get('amount')?.touched && expenseForm.get('amount')?.hasError('required')">
+              El importe es obligatorio.
+            </ion-note>
+            <ion-note color="danger" *ngIf="expenseForm.get('amount')?.touched && expenseForm.get('amount')?.hasError('min')">
+              El importe debe ser mayor que 0.
+            </ion-note>
+          </div>
+
+          <div class="input-group">
+            <ion-item>
+              <ion-label position="stacked">Categoría</ion-label>
+              <ion-select formControlName="category">
+                <ion-select-option *ngFor="let category of categories" [value]="category.value">
+                  {{ category.label }}
+                </ion-select-option>
+              </ion-select>
+            </ion-item>
+          </div>
+
+          <!-- Split Type Selector matching Figma -->
+          <div class="split-type-section">
+            <span class="split-type-label">Tipo de Reparto</span>
+            <div class="split-type-pills">
+              <span class="split-pill active">Equitativo</span>
+              <span class="split-pill">Personalizado</span>
+            </div>
+          </div>
+
+          <!-- Member Split Preview list matching Figma -->
+          <div class="splits-preview-section" *ngIf="members.length > 0">
+            <div class="splits-preview-header">
+              <span class="splits-title">Asignación por compañero</span>
+              <ion-badge>{{ members.length }} Personas</ion-badge>
+            </div>
+            
+            <div class="splits-preview-list">
+              <div class="split-preview-item" *ngFor="let member of members">
+                <div class="split-preview-left">
+                  <div class="split-avatar">M</div>
+                  <span>{{ member.firstName }} {{ member.lastName }}</span>
+                </div>
+                <span class="split-preview-amount">
+                  {{ (expenseForm.value.amount || 0) / members.length | currency:'EUR' }}
+                </span>
+              </div>
+            </div>
+          </div>
+
+          <ion-button expand="block" type="submit" [disabled]="creating" class="guardar-gasto-btn">
+            {{ creating ? 'Guardando...' : 'Guardar Gasto' }}
+          </ion-button>
+        </form>
+
+        <ion-text color="success" *ngIf="successMessage">
+          <p class="success-message">{{ successMessage }}</p>
+        </ion-text>
+        <ion-text color="danger" *ngIf="error">
+          <p class="error-message">{{ error }}</p>
+        </ion-text>
+      </ion-card-content>
     </ion-card>
 
-    <ion-card>
-      <ion-card-header>
-        <ion-card-title>Gastos recientes</ion-card-title>
-      </ion-card-header>
-      <ion-list>
-        <ion-item *ngFor="let expense of expenses">
-          <ion-label>
+    <!-- Transacciones Recientes (Expenses) -->
+    <div class="section-header">
+      <h2 class="section-title">Transacciones Recientes</h2>
+    </div>
+
+    <div class="transactions-list">
+      <div class="transaction-card-item" *ngFor="let expense of expenses">
+        <div class="transaction-left">
+          <div class="transaction-icon-box" [ngClass]="expense.category">
+            <span *ngIf="expense.category === 'CLEANING'">🧹</span>
+            <span *ngIf="expense.category === 'GROCERIES'">🍕</span>
+            <span *ngIf="expense.category === 'RENT'">🏠</span>
+            <span *ngIf="expense.category === 'UTILITIES'">⚡</span>
+            <span *ngIf="expense.category !== 'CLEANING' && expense.category !== 'GROCERIES' && expense.category !== 'RENT' && expense.category !== 'UTILITIES'">💰</span>
+          </div>
+          <div class="transaction-info">
             <h3>{{ expense.title }}</h3>
-            <p>{{ expense.amount | currency:'EUR' }}</p>
-          </ion-label>
-        </ion-item>
-      </ion-list>
-    </ion-card>
+            <p>{{ expense.category }} · Reciente</p>
+          </div>
+        </div>
+        <div class="transaction-right">
+          <span class="transaction-amount">-{{ expense.amount | currency:'EUR' }}</span>
+        </div>
+      </div>
+      
+      <div class="empty-state-card" *ngIf="expenses.length === 0">
+        <p>No hay gastos registrados recientemente.</p>
+      </div>
+    </div>
   </ng-container>
 
   <ng-template #noFlat>
-    <ion-card>
-      <ion-card-header>
-        <ion-card-title>Selecciona un piso</ion-card-title>
-      </ion-card-header>
-      <ion-card-content>
-        Elige un piso en la pantalla de inicio para ver gastos y saldos.
-      </ion-card-content>
-    </ion-card>
+    <div class="select-flat-prompt">
+      <ion-card>
+        <ion-card-header>
+          <ion-card-title>Selecciona un piso</ion-card-title>
+        </ion-card-header>
+        <ion-card-content>
+          Elige un piso en la pantalla de inicio para ver y gestionar el libro contable.
+        </ion-card-content>
+      </ion-card>
+    </div>
   </ng-template>
 </ion-content>
