@@ -56,6 +56,40 @@ export class PollsPage implements OnInit {
     }
   }
 
+  get activePolls(): any[] {
+    const now = new Date();
+    return this.polls.filter((poll) => !poll.expiresAt || new Date(poll.expiresAt) >= now);
+  }
+
+  get finishedPolls(): any[] {
+    const now = new Date();
+    return this.polls.filter((poll) => poll.expiresAt && new Date(poll.expiresAt) < now);
+  }
+
+  getPollWinner(poll: any): { text: string; votes: number } | null {
+    if (!poll.options || poll.options.length === 0) return null;
+    let winner = poll.options[0];
+    let maxVotes = winner._count?.votes || 0;
+
+    for (let i = 1; i < poll.options.length; i++) {
+      const opt = poll.options[i];
+      const votes = opt._count?.votes || 0;
+      if (votes > maxVotes) {
+        winner = opt;
+        maxVotes = votes;
+      }
+    }
+
+    if (maxVotes === 0) {
+      return null;
+    }
+
+    return {
+      text: winner.text,
+      votes: maxVotes,
+    };
+  }
+
   loadMembers(flatId: string) {
     this.loading = true;
     this.api.get<any>(`flats/${flatId}`).subscribe({

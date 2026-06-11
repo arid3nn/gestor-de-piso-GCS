@@ -1,0 +1,82 @@
+<ion-header class="ion-no-border">
+  <ion-toolbar>
+    <div class="custom-header-content">
+      <div class="header-left">
+        <div class="avatar-circle">C</div>
+        <span class="header-app-name">Muro del Hogar</span>
+      </div>
+      <div class="header-right"></div>
+    </div>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="chat-page-content">
+  <div class="ion-padding" style="padding-bottom: 80px;">
+    <div class="page-header-intro">
+      <h1 class="page-title">Muro del Piso</h1>
+      <p class="page-subtitle">Comunícate con todos los compañeros del piso en tiempo real.</p>
+    </div>
+
+    <ng-container *ngIf="selectedFlatId; else noFlat">
+      <div class="loading-container" *ngIf="loading">
+        <ion-spinner name="crescent" color="primary"></ion-spinner>
+      </div>
+
+      <div class="messages-container" *ngIf="!loading">
+        <div *ngFor="let msg of messages" 
+             class="message-bubble-wrapper" 
+             [ngClass]="{'msg-mine': msg.userId === currentUser?.id, 'msg-other': msg.userId !== currentUser?.id}">
+          
+          <div class="message-avatar" *ngIf="msg.userId !== currentUser?.id">
+            {{ msg.user?.firstName?.charAt(0) || '?' }}
+          </div>
+
+          <div class="message-content-box">
+            <span class="message-sender" *ngIf="msg.userId !== currentUser?.id">
+              {{ msg.user?.firstName }} {{ msg.user?.lastName }}
+            </span>
+            <div class="bubble">
+              <p class="message-text">{{ msg.content }}</p>
+              <span class="message-time">{{ msg.timestamp | date:'HH:mm' }}</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="empty-state-card" *ngIf="messages.length === 0">
+          <p>Aún no hay mensajes en este piso. ¡Sé el primero en saludar!</p>
+        </div>
+      </div>
+    </ng-container>
+
+    <ng-template #noFlat>
+      <div class="select-flat-prompt">
+        <ion-card>
+          <ion-card-header>
+            <ion-card-title>Selecciona un piso</ion-card-title>
+          </ion-card-header>
+          <ion-card-content>
+            Elige un piso en la pantalla de inicio para acceder al chat del hogar.
+          </ion-card-content>
+        </ion-card>
+      </div>
+    </ng-template>
+  </div>
+</ion-content>
+
+<ion-footer class="ion-no-border chat-footer" *ngIf="selectedFlatId">
+  <ion-toolbar class="footer-toolbar">
+    <form (ngSubmit)="sendMessage()" class="chat-input-form">
+      <ion-input [(ngModel)]="newMessageText" 
+                 name="newMessageText" 
+                 placeholder="Escribe un mensaje..." 
+                 class="chat-input" 
+                 autocomplete="off">
+      </ion-input>
+      <ion-button type="submit" 
+                  [disabled]="!newMessageText.trim() || sending" 
+                  class="chat-send-btn">
+        <ion-icon name="send"></ion-icon>
+      </ion-button>
+    </form>
+  </ion-toolbar>
+</ion-footer>

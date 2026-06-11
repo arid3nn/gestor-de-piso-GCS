@@ -59,6 +59,7 @@ export class ApiService {
     if (!this.getLocalStorageData('mock_tasks')) this.setLocalStorageData('mock_tasks', []);
     if (!this.getLocalStorageData('mock_polls')) this.setLocalStorageData('mock_polls', []);
     if (!this.getLocalStorageData('mock_expenses')) this.setLocalStorageData('mock_expenses', []);
+    if (!this.getLocalStorageData('mock_messages')) this.setLocalStorageData('mock_messages', []);
     localStorage.setItem('mock_db_initialized', 'true');
   }
 
@@ -222,6 +223,27 @@ export class ApiService {
     });
     this.setLocalStorageData('mock_expenses', localExpenses);
 
+    // 6. Messages
+    const localMessages = this.getLocalStorageData('mock_messages') || [];
+    const xmlMessages: any[] = [];
+    const messageEls = xmlDoc.getElementsByTagName('message');
+    for (let i = 0; i < messageEls.length; i++) {
+      const el = messageEls[i];
+      xmlMessages.push({
+        id: el.getAttribute('id') || `m_${Date.now()}_${i}`,
+        flatId: el.getAttribute('flatId'),
+        userId: el.getAttribute('userId'),
+        timestamp: el.getAttribute('timestamp') || new Date().toISOString(),
+        content: getElementText(el, 'content'),
+      });
+    }
+    xmlMessages.forEach((xm) => {
+      if (!localMessages.some((lm: any) => lm.id === xm.id)) {
+        localMessages.push(xm);
+      }
+    });
+    this.setLocalStorageData('mock_messages', localMessages);
+
     localStorage.setItem('mock_db_initialized', 'true');
   }
 
@@ -351,6 +373,8 @@ export class ApiService {
               const fromUser = users.find((u: any) => u.id === u1);
               const toUser = users.find((u: any) => u.id === u2);
               finalBalances.push({
+                fromUserId: u1,
+                toUserId: u2,
                 fromName: fromUser ? `${fromUser.firstName} ${fromUser.lastName || ''}`.trim() : 'Usuario',
                 toName: toUser ? `${toUser.firstName} ${toUser.lastName || ''}`.trim() : 'Usuario',
                 amount: net
@@ -362,6 +386,8 @@ export class ApiService {
               const fromUser = users.find((u: any) => u.id === u2);
               const toUser = users.find((u: any) => u.id === u1);
               finalBalances.push({
+                fromUserId: u2,
+                toUserId: u1,
                 fromName: fromUser ? `${fromUser.firstName} ${fromUser.lastName || ''}`.trim() : 'Usuario',
                 toName: toUser ? `${toUser.firstName} ${toUser.lastName || ''}`.trim() : 'Usuario',
                 amount: net
@@ -404,7 +430,25 @@ export class ApiService {
       }));
     }
 
-    // 6. flats/:flatId
+    // 6. flats/:flatId/messages
+    const messagesMatch = path.match(/^flats\/([^\/]+)\/messages$/);
+    if (messagesMatch) {
+      if (!currentUser) throw new Error('No autorizado');
+      const flatId = messagesMatch[1];
+      const messages = this.getLocalStorageData('mock_messages') || [];
+      const users = this.getLocalStorageData('mock_users') || [];
+      
+      const flatMessages = messages.filter((m: any) => m.flatId === flatId);
+      return flatMessages.map((msg: any) => {
+        const user = users.find((u: any) => u.id === msg.userId);
+        return {
+          ...msg,
+          user: user ? { id: user.id, firstName: user.firstName, lastName: user.lastName, email: user.email } : null
+        };
+      });
+    }
+
+    // 7. flats/:flatId
     const flatByIdMatch = path.match(/^flats\/([^\/]+)$/);
     if (flatByIdMatch) {
       if (!currentUser) throw new Error('No autorizado');
@@ -606,6 +650,61 @@ export class ApiService {
         category,
         payerId: currentUser.id,
         splits
+      };
+      expenses.push(newExpense);
+      this.setLocalStorageData('mock_expenses', expenses);
+      return newExpense;
+    }
+
+    // 10. flats/:flatId/messages
+    const messagesPostMatch = path.match(/^flats\/([^\/]+)\/messages$/);
+    if (messagesPostMatch) {
+      if (!currentUser) throw new Error('No autorizado');
+      const flatId = messagesPostMatch[1];
+      const { content } = body as any;
+      if (!content || !content.trim()) throw new Error('El mensaje no puede estar vacío');
+
+      const messages = this.getLocalStorageData('mock_messages') || [];
+      const newMessage = {
+        id: `m_${Date.now()}`,
+        flatId,
+        userId: currentUser.id,
+        content,
+        timestamp: new Date().toISOString()
+      };
+      messages.push(newMessage);
+      this.setLocalStorageData('mock_messages', messages);
+      return newMessage;
+    }
+
+    // 11. flats/:flatId/expenses/pay-debt
+    const payDebtMatch = path.match(/^flats\/([^\/]+)\/expenses\/pay-debt$/);
+    if (payDebtMatch) {
+      if (!currentUser) throw new Error('No autorizado');
+      const flatId = payDebtMatch[1];
+      const { fromUserId, toUserId, amount } = body as any;
+
+      if (!fromUserId || !toUserId || !amount) {
+        throw new Error('Datos de pago incompletos');
+      }
+
+      const expenses = this.getLocalStorageData('mock_expenses') || [];
+      const users = this.getLocalStorageData('mock_users') || [];
+      const fromUser = users.find((u: any) => u.id === fromUserId);
+      const toUser = users.find((u: any) => u.id === toUserId);
+      const fromName = fromUser ? fromUser.firstName : 'Usuario';
+      const toName = toUser ? toUser.firstName : 'Usuario';
+
+      const newExpense = {
+        id: `e_pay_${Date.now()}`,
+        flatId,
+        title: `Pago de deuda: ${fromName} a ${toName}`,
+        amount: parseFloat(amount),
+        category: 'OTHER',
+        payerId: fromUserId,
+        splits: [
+          { userId: toUserId, amount: parseFloat(amount) }
+        ]
       };
       expenses.push(newExpense);
       this.setLocalStorageData('mock_expenses', expenses);

@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
-import { IonicModule } from '@ionic/angular';
+import { IonicModule, AlertController } from '@ionic/angular';
 import { FlatService } from '../../services/flat.service';
 import { ApiService } from '../../services/api.service';
 import { AuthService } from '../../services/auth.service';
@@ -29,6 +29,7 @@ export class ExpensesPage implements OnInit {
   successMessage: string | null = null;
   loading = false;
   creating = false;
+  currentUser: any = null;
 
   categories = [
     { value: 'GROCERIES', label: 'Comida' },
@@ -42,7 +43,8 @@ export class ExpensesPage implements OnInit {
     private flatService: FlatService,
     private api: ApiService,
     private formBuilder: FormBuilder,
-    private authService: AuthService
+    private authService: AuthService,
+    private alertController: AlertController
   ) {
     this.expenseForm = this.formBuilder.group({
       title: ['', [Validators.required]],
@@ -72,12 +74,65 @@ export class ExpensesPage implements OnInit {
   }
 
   ngOnInit() {
-    this.selectedFlatId = this.flatService.getSelectedFlatId();
-    if (this.selectedFlatId) {
-      this.loadFlatDetails();
-      this.loadExpenses();
-      this.loadBalances();
-    }
+    this.currentUser = this.authService.getCurrentUser();
+    this.flatService.selectedFlatId$().subscribe((flatId) => {
+      this.selectedFlatId = flatId;
+      if (flatId) {
+        this.loadFlatDetails();
+        this.loadExpenses();
+        this.loadBalances();
+      } else {
+        this.members = [];
+        this.expenses = [];
+        this.balances = [];
+      }
+    });
+  }
+
+  isUserInvolved(balance: any): boolean {
+    if (!this.currentUser) return false;
+    return this.currentUser.id === balance.fromUserId || this.currentUser.id === balance.toUserId;
+  }
+
+  async payDebt(balance: any) {
+    if (!this.selectedFlatId) return;
+
+    const alert = await this.alertController.create({
+      header: 'Confirmar Pago',
+      message: `¿Estás seguro de que deseas marcar como pagada la deuda de <strong>${balance.amount.toFixed(2)}€</strong> de <strong>${balance.fromName}</strong> a <strong>${balance.toName}</strong>?`,
+      buttons: [
+        {
+          text: 'Cancelar',
+          role: 'cancel'
+        },
+        {
+          text: 'Confirmar',
+          handler: () => {
+            this.loading = true;
+            this.api.post(`flats/${this.selectedFlatId}/expenses/pay-debt`, {
+              fromUserId: balance.fromUserId,
+              toUserId: balance.toUserId,
+              amount: balance.amount
+            }).subscribe({
+              next: () => {
+                this.successMessage = 'Pago registrado y balances actualizados.';
+                this.error = null;
+                this.loadExpenses();
+                this.loadBalances();
+                this.loadFlatDetails();
+              },
+              error: (response) => {
+                this.error = response?.error?.message || 'No se pudo registrar el pago';
+                this.successMessage = null;
+                this.loading = false;
+              }
+            });
+          }
+        }
+      ]
+    });
+
+    await alert.present();
   }
 
   loadFlatDetails() {

@@ -80,6 +80,10 @@ const relationConfig: Record<string, Record<string, any>> = {
     members: { model: 'flatMember', localKey: 'flatId', foreignKey: 'id', multiple: true },
     rooms: { model: 'rooms', localKey: 'flatId', foreignKey: 'id', multiple: true },
   },
+  chatMessage: {
+    user: { model: 'users', localKey: 'userId', foreignKey: 'id', multiple: false },
+    flat: { model: 'flats', localKey: 'flatId', foreignKey: 'id', multiple: false },
+  },
 };
 
 @Injectable()

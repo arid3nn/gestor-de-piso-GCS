@@ -5,9 +5,7 @@
         <div class="avatar-circle">E</div>
         <span class="header-app-name">Libro Contable</span>
       </div>
-      <div class="header-right">
-        <ion-icon name="notifications-outline" class="bell-icon"></ion-icon>
-      </div>
+      <div class="header-right"></div>
     </div>
   </ion-toolbar>
 </ion-header>
@@ -52,7 +50,10 @@
         </div>
         <div class="balance-right">
           <span class="balance-amount">{{ balance.amount | currency:'EUR' }}</span>
-          <span class="balance-action-link">PAGAR AHORA</span>
+          <span class="balance-action-link" *ngIf="isUserInvolved(balance)" (click)="payDebt(balance)">
+            {{ currentUser?.id === balance.fromUserId ? 'PAGAR AHORA' : 'MARCAR PAGADO' }}
+          </span>
+          <span class="balance-pending-label" *ngIf="!isUserInvolved(balance)">PENDIENTE</span>
         </div>
       </div>
       

@@ -5,9 +5,7 @@
         <div class="avatar-circle">V</div>
         <span class="header-app-name">Votaciones</span>
       </div>
-      <div class="header-right">
-        <ion-icon name="notifications-outline" class="bell-icon"></ion-icon>
-      </div>
+      <div class="header-right"></div>
     </div>
   </ion-toolbar>
 </ion-header>
@@ -23,12 +21,12 @@
     <!-- Votaciones Activas Section -->
     <div class="section-header">
       <h2 class="section-title">Votaciones Activas</h2>
-      <ion-badge>{{ polls.length }} Activas</ion-badge>
+      <ion-badge>{{ activePolls.length }} Activas</ion-badge>
     </div>
 
     <div class="polls-list">
       <!-- Each active poll card matching Figma -->
-      <ion-card class="active-poll-card" *ngFor="let poll of polls">
+      <ion-card class="active-poll-card" *ngFor="let poll of activePolls">
         <ion-card-header>
           <ion-card-title>{{ poll.question }}</ion-card-title>
           <ion-card-subtitle *ngIf="poll.expiresAt">
@@ -55,7 +53,7 @@
         </ion-card-content>
       </ion-card>
 
-      <div class="empty-state-card" *ngIf="polls.length === 0">
+      <div class="empty-state-card" *ngIf="activePolls.length === 0">
         <p>No hay votaciones activas en este momento.</p>
       </div>
     </div>
@@ -65,30 +63,27 @@
       <h2 class="section-title">Decisiones Tomadas</h2>
     </div>
 
-    <div class="decisions-list">
-      <div class="decision-card-item">
+    <div class="decisions-list" *ngIf="finishedPolls.length > 0">
+      <div class="decision-card-item" *ngFor="let poll of finishedPolls">
         <div class="decision-left">
-          <div class="decision-check-circle">
+          <div class="decision-check-circle" style="display: inline-flex; align-items: center; justify-content: center; color: #2e7d32; font-size: 24px; margin-right: 12px;">
             <ion-icon name="checkmark-circle"></ion-icon>
           </div>
           <div class="decision-info">
-            <h3>Limpieza profunda mensual</h3>
-            <p>Ganador: <strong>Sábados por la mañana</strong> (4 votos)</p>
+            <h3>{{ poll.question }}</h3>
+            <p *ngIf="getPollWinner(poll) as winner">
+              Ganador: <strong>{{ winner.text }}</strong> ({{ winner.votes }} votos)
+            </p>
+            <p *ngIf="!getPollWinner(poll)">
+              Finalizada sin votos.
+            </p>
           </div>
         </div>
       </div>
+    </div>
 
-      <div class="decision-card-item">
-        <div class="decision-left">
-          <div class="decision-check-circle">
-            <ion-icon name="checkmark-circle"></ion-icon>
-          </div>
-          <div class="decision-info">
-            <h3>Cambio de proveedor de internet</h3>
-            <p>Ganador: <strong>Fibra 1Gbps Simétrica</strong> (3 votos)</p>
-          </div>
-        </div>
-      </div>
+    <div class="empty-state-card" *ngIf="finishedPolls.length === 0">
+      <p>No hay decisiones tomadas/votaciones finalizadas en este piso.</p>
     </div>
 
     <!-- Nueva Votación Form Card -->

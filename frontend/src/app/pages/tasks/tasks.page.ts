@@ -63,6 +63,33 @@ export class TasksPage implements OnInit {
     }
   }
 
+  isNextWeek(dueDateStr: string | null | undefined): boolean {
+    if (!dueDateStr) return false;
+    const dueDate = new Date(dueDateStr);
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    const nextMonday = new Date(today);
+    const dayOfWeek = today.getDay(); // 0 is Sunday, 1 is Monday, etc.
+    const daysToNextMonday = dayOfWeek === 0 ? 1 : 8 - dayOfWeek;
+    nextMonday.setDate(today.getDate() + daysToNextMonday);
+    nextMonday.setHours(0, 0, 0, 0);
+
+    const nextSunday = new Date(nextMonday);
+    nextSunday.setDate(nextMonday.getDate() + 6);
+    nextSunday.setHours(23, 59, 59, 999);
+
+    return dueDate >= nextMonday && dueDate <= nextSunday;
+  }
+
+  get pendingTasks(): any[] {
+    return this.tasks.filter((task) => !this.isNextWeek(task.dueDate));
+  }
+
+  get rotationTasks(): any[] {
+    return this.tasks.filter((task) => this.isNextWeek(task.dueDate));
+  }
+
   loadMembers(flatId: string) {
     this.loading = true;
     this.api.get<any>(`flats/${flatId}`).subscribe({

@@ -82,6 +82,19 @@
         <vote userId="u1" optionId="o3" />
       </votes>
     </poll>
+    <poll id="p3" flatId="f1">
+      <question>¿Qué cafetera compramos para el piso?</question>
+      <expiresAt>2026-06-05T12:00:00.000Z</expiresAt>
+      <options>
+        <option id="o6">Cafetera de cápsulas</option>
+        <option id="o7">Cafetera italiana de rosca</option>
+      </options>
+      <votes>
+        <vote userId="u1" optionId="o6" />
+        <vote userId="u2" optionId="o6" />
+        <vote userId="u3" optionId="o7" />
+      </votes>
+    </poll>
   </polls>
   <expenses>
     <expense id="e1" flatId="f1">
@@ -105,6 +118,16 @@
         <split userId="u2" amount="15.00" />
         <split userId="u3" amount="15.00" />
       </splits>
-    </expense>
   </expenses>
+  <messages>
+    <message id="m1" flatId="f1" userId="u1" timestamp="2026-06-11T18:00:00.000Z">
+      <content>¡Hola a todos! Bienvenidos al chat del piso. ¿Qué tal va la limpieza?</content>
+    </message>
+    <message id="m2" flatId="f1" userId="u2" timestamp="2026-06-11T18:05:00.000Z">
+      <content>¡Hola Carlos! Muy bien, yo ya limpié la cocina. ¿Alejandro, te toca el baño?</content>
+    </message>
+    <message id="m3" flatId="f1" userId="u3" timestamp="2026-06-11T18:10:00.000Z">
+      <content>¡Sí, esta tarde me pongo con ello sin falta!</content>
+    </message>
+  </messages>
 </database>

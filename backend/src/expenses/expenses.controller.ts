@@ -29,4 +29,13 @@ export class ExpensesController {
     // Returns the calculated and simplified debt graph mapping who owes whom
     return this.expensesService.getBalances(flatId);
   }
+
+  @Post('pay-debt')
+  async payDebt(
+    @Request() req: any,
+    @Param('flatId') flatId: string,
+    @Body() dto: { fromUserId: string; toUserId: string; amount: number }
+  ) {
+    return this.expensesService.payDebt(req.user.id, flatId, dto);
+  }
 }

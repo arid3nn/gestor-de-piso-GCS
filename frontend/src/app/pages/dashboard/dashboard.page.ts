@@ -4,6 +4,7 @@ import { IonicModule } from '@ionic/angular';
 import { Router, RouterModule } from '@angular/router';
 import { FlatService } from '../../services/flat.service';
 import { ApiService } from '../../services/api.service';
+import { AuthService } from '../../services/auth.service';
 
 interface TaskSummary {
   id: string;
@@ -28,10 +29,14 @@ export class DashboardPage implements OnInit {
   loading = false;
   error: string | null = null;
 
+  showCode = false;
+  currentFlatCode: string | null = null;
+
   constructor(
     private flatService: FlatService,
     private api: ApiService,
-    private router: Router
+    private router: Router,
+    private authService: AuthService
   ) {}
 
   ngOnInit() {
@@ -39,6 +44,11 @@ export class DashboardPage implements OnInit {
       this.selectedFlatId = flatId;
       if (flatId) {
         this.loadSummary(flatId);
+      } else {
+        this.tasks = [];
+        this.pendingExpenses = [];
+        this.harmonyScore = 0;
+        this.currentFlatCode = null;
       }
     });
     this.loadFlats();
@@ -50,11 +60,15 @@ export class DashboardPage implements OnInit {
     this.flatService.getMyFlats().subscribe({
       next: (flats) => {
         this.flats = flats || [];
-        if (!this.selectedFlatId && this.flats.length > 0) {
-          const firstFlatId = this.flats[0].id || this.flats[0].flat?.id;
-          if (firstFlatId) {
-            this.selectFlat(firstFlatId);
-          }
+        const flatIds = this.flats.map(f => f.id || f.flat?.id).filter(Boolean);
+
+        if (this.selectedFlatId && !flatIds.includes(this.selectedFlatId)) {
+          this.selectedFlatId = null;
+          this.flatService.setSelectedFlat('');
+        }
+
+        if (!this.selectedFlatId && flatIds.length > 0) {
+          this.selectFlat(flatIds[0]);
         }
         this.loading = false;
       },
@@ -76,12 +90,24 @@ export class DashboardPage implements OnInit {
   }
 
   logout() {
-    this.router.navigate(['/login']);
+    this.authService.logout();
+  }
+
+  toggleJoinCode() {
+    this.showCode = !this.showCode;
   }
 
   loadSummary(flatId: string) {
     this.error = null;
     this.loading = true;
+    this.currentFlatCode = null;
+    this.showCode = false;
+
+    this.api.get<any>(`flats/${flatId}`).subscribe({
+      next: (flat) => {
+        this.currentFlatCode = flat?.joinCode ?? null;
+      }
+    });
 
     const tasks$ = this.api.get<any[]>(`flats/${flatId}/tasks`);
     const balances$ = this.api.get<any[]>(`flats/${flatId}/expenses/balances`);

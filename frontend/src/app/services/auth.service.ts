@@ -37,6 +37,7 @@ export class AuthService {
 
   logout() {
     localStorage.removeItem(this.tokenKey);
+    localStorage.removeItem('selected_flat_id');
     this.router.navigate(['/login']);
   }
 

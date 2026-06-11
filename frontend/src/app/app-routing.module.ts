@@ -21,6 +21,7 @@ const routes: Routes = [
       { path: 'expenses', loadChildren: () => import('./pages/expenses/expenses.module').then((m) => m.ExpensesPageModule) },
       { path: 'tasks', loadChildren: () => import('./pages/tasks/tasks.module').then((m) => m.TasksPageModule) },
       { path: 'polls', loadChildren: () => import('./pages/polls/polls.module').then((m) => m.PollsPageModule) },
+      { path: 'chat', loadChildren: () => import('./pages/chat/chat.module').then((m) => m.ChatPageModule) },
       { path: '', redirectTo: 'home', pathMatch: 'full' },
     ],
   },

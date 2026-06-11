@@ -291,8 +291,87 @@ ion-badge, .vote-count-badge {
     color: #FAF5F0 !important;
   }
 }
-
-ion-button, .fab-btn, .circle-checkbox.checked::after {
+ion-button:not([fill="outline"]):not([fill="clear"]), .fab-btn, .circle-checkbox.checked::after {
   --color: #ffffff !important;
-  color: #ffffff !important; /* Keep white text inside buttons */
+  color: #ffffff !important; /* Keep white text inside solid buttons */
+}
+
+.flat-code-text {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: #9D4436 !important;
+  background: #FADED6;
+  padding: 6px 12px;
+  border-radius: 10px;
+  margin-right: 8px;
+  letter-spacing: 0.8px;
+  display: inline-block;
+}
+
+/* Global Header Styling */
+.custom-header-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  padding: 0 4px;
+}
+
+.header-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.avatar-circle {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: #592C1D;
+  color: #FAF5F0 !important;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 14px;
+}
+
+.header-app-name {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #3E2319 !important;
+}
+
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  
+  ion-icon {
+    font-size: 24px;
+    color: #3E2319;
+    cursor: pointer;
+  }
+}
+
+/* Premium Segment Controller Styling */
+ion-segment {
+  background: #F6EBE2;
+  border-radius: 16px;
+  padding: 4px;
+  border: none;
+}
+
+ion-segment-button {
+  --color: #8C736C !important;
+  --color-checked: #FAF5F0 !important;
+  --background-checked: #592C1D !important;
+  --indicator-color: transparent !important;
+  border-radius: 12px;
+  margin: 0 2px;
+  
+  ion-label {
+    color: inherit !important;
+    font-weight: 600;
+  }
 }

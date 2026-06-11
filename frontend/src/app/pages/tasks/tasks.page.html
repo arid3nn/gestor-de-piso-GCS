@@ -5,9 +5,7 @@
         <div class="avatar-circle">T</div>
         <span class="header-app-name">Tareas del Hogar</span>
       </div>
-      <div class="header-right">
-        <ion-icon name="notifications-outline" class="bell-icon"></ion-icon>
-      </div>
+      <div class="header-right"></div>
     </div>
   </ion-toolbar>
 </ion-header>
@@ -35,11 +33,11 @@
     <!-- Tareas Pendientes Checklist -->
     <div class="section-header">
       <h2 class="section-title">Tareas Pendientes</h2>
-      <ion-badge>{{ tasks.length }} tareas hoy</ion-badge>
+      <ion-badge>{{ pendingTasks.length }} tareas hoy</ion-badge>
     </div>
 
     <div class="tasks-checklist">
-      <div class="task-check-card" *ngFor="let task of tasks" (click)="completeTask(task.id)">
+      <div class="task-check-card" *ngFor="let task of pendingTasks" (click)="completeTask(task.id)">
         <div class="task-check-left">
           <div class="circle-checkbox" [class.checked]="task.completed"></div>
           <div class="task-info">
@@ -59,7 +57,7 @@
         </div>
       </div>
       
-      <div class="empty-state-card" *ngIf="tasks.length === 0">
+      <div class="empty-state-card" *ngIf="pendingTasks.length === 0">
         <p>¡Todo limpio! No hay tareas pendientes en este momento.</p>
       </div>
     </div>
@@ -69,38 +67,28 @@
       <h2 class="section-title">Rotación de Próxima Semana</h2>
     </div>
 
-    <ion-card class="rotation-card" *ngIf="members.length > 0">
+    <ion-card class="rotation-card" *ngIf="rotationTasks.length > 0">
       <ion-card-content class="rotation-grid">
-        <div class="rotation-box" *ngIf="members[0]">
-          <span class="rotation-title">LIMPIEZA GENERAL</span>
+        <div class="rotation-box" *ngFor="let task of rotationTasks">
+          <span class="rotation-title">{{ task.title | uppercase }}</span>
           <div class="rotation-assignee">
-            <span class="assignee-avatar">{{ members[0].firstName.substring(0, 1) }}</span>
-            <span class="assignee-name">{{ members[0].firstName }}</span>
-          </div>
-        </div>
-        <div class="rotation-box" *ngIf="members[1]">
-          <span class="rotation-title">BAÑO PRINCIPAL</span>
-          <div class="rotation-assignee">
-            <span class="assignee-avatar">{{ members[1].firstName.substring(0, 1) }}</span>
-            <span class="assignee-name">{{ members[1].firstName }}</span>
-          </div>
-        </div>
-        <div class="rotation-box" *ngIf="members[2]">
-          <span class="rotation-title">COMPRAS</span>
-          <div class="rotation-assignee">
-            <span class="assignee-avatar">{{ members[2].firstName.substring(0, 1) }}</span>
-            <span class="assignee-name">{{ members[2].firstName }}</span>
-          </div>
-        </div>
-        <div class="rotation-box" *ngIf="members[3]">
-          <span class="rotation-title">LAVANDERÍA</span>
-          <div class="rotation-assignee">
-            <span class="assignee-avatar">{{ members[3].firstName.substring(0, 1) }}</span>
-            <span class="assignee-name">{{ members[3].firstName }}</span>
+            <span class="assignee-avatar" *ngIf="task.assignedTo">
+              {{ task.assignedTo.firstName.substring(0, 1) }}
+            </span>
+            <span class="assignee-name" *ngIf="task.assignedTo">
+              {{ task.assignedTo.firstName }}
+            </span>
+            <span class="assignee-name unassigned" *ngIf="!task.assignedTo">
+              Sin asignar
+            </span>
           </div>
         </div>
       </ion-card-content>
     </ion-card>
+
+    <div class="empty-state-card" *ngIf="rotationTasks.length === 0">
+      <p>No hay tareas de rotación programadas para la próxima semana.</p>
+    </div>
 
     <!-- Crear Tarea Form Card -->
     <div class="section-header">

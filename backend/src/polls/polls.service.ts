@@ -47,7 +47,7 @@ export class PollsService {
 
   async getActivePolls(flatId: string) {
     return this.prisma.poll.findMany({
-      where: { flatId, isClosed: false },
+      where: { flatId },
       include: {
         options: {
           include: {

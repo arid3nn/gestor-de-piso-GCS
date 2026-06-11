@@ -6,11 +6,12 @@ import { ApiService } from './api.service';
   providedIn: 'root',
 })
 export class FlatService {
-  private flatIdSubject = new BehaviorSubject<string | null>(null);
+  private flatIdSubject = new BehaviorSubject<string | null>(localStorage.getItem('selected_flat_id'));
 
   constructor(private api: ApiService) {}
 
   setSelectedFlat(flatId: string) {
+    localStorage.setItem('selected_flat_id', flatId);
     this.flatIdSubject.next(flatId);
   }
 

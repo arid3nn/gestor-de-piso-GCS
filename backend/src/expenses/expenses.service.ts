@@ -158,4 +158,23 @@ export class ExpensesService {
       orderBy: { createdAt: 'desc' }
     });
   }
+
+  async payDebt(userId: string, flatId: string, dto: { fromUserId: string; toUserId: string; amount: number }) {
+    const fromUser = await this.prisma.user.findUnique({ where: { id: dto.fromUserId } });
+    const toUser = await this.prisma.user.findUnique({ where: { id: dto.toUserId } });
+    if (!fromUser || !toUser) {
+      throw new BadRequestException('User not found');
+    }
+    const fromName = fromUser.firstName;
+    const toName = toUser.firstName;
+
+    return this.createExpense(dto.fromUserId, flatId, {
+      title: `Pago de deuda: ${fromName} a ${toName}`,
+      amount: dto.amount,
+      category: 'OTHER' as any,
+      splits: [
+        { userId: dto.toUserId, amount: dto.amount }
+      ]
+    });
+  }
 }

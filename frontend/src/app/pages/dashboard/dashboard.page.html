@@ -6,7 +6,8 @@
         <span class="header-app-name">ArmonIA</span>
       </div>
       <div class="header-right">
-        <ion-icon name="notifications-outline" class="bell-icon"></ion-icon>
+        <span class="flat-code-text" *ngIf="showCode && currentFlatCode">{{ currentFlatCode }}</span>
+        <ion-icon name="key-outline" class="share-code-icon" (click)="toggleJoinCode()" *ngIf="selectedFlatId" style="margin-right: 8px; font-size: 24px; color: #3E2319; cursor: pointer;"></ion-icon>
         <ion-icon name="log-out-outline" class="logout-icon" (click)="logout()"></ion-icon>
       </div>
     </div>

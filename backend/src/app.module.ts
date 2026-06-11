@@ -9,6 +9,7 @@ import { FlatsModule } from './flats/flats.module';
 import { TasksModule } from './tasks/tasks.module';
 import { ExpensesModule } from './expenses/expenses.module';
 import { PollsModule } from './polls/polls.module';
+import { ChatModule } from './chat/chat.module';
 
 import { BullModule } from '@nestjs/bullmq';
 import { ConfigModule } from '@nestjs/config';
@@ -24,6 +25,7 @@ import { ConfigModule } from '@nestjs/config';
     TasksModule,
     ExpensesModule,
     PollsModule,
+    ChatModule,
     // BullModule.forRoot({
     //   connection: {
     //     host: process.env.REDIS_HOST || 'localhost',
