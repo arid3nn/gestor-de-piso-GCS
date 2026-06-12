@@ -113,8 +113,12 @@
           <div class="split-type-section">
             <span class="split-type-label">Tipo de Reparto</span>
             <div class="split-type-pills">
-              <span class="split-pill active">Equitativo</span>
-              <span class="split-pill">Personalizado</span>
+              <span class="split-pill" 
+                    [class.active]="splitType === 'equitativo'" 
+                    (click)="setSplitType('equitativo')">Equitativo</span>
+              <span class="split-pill" 
+                    [class.active]="splitType === 'personalizado'" 
+                    (click)="setSplitType('personalizado')">Personalizado</span>
             </div>
           </div>
 
@@ -126,19 +130,42 @@
             </div>
             
             <div class="splits-preview-list">
-              <div class="split-preview-item" *ngFor="let member of members">
+              <div class="split-preview-item" *ngFor="let split of memberSplits">
                 <div class="split-preview-left">
                   <div class="split-avatar">M</div>
-                  <span>{{ member.firstName }} {{ member.lastName }}</span>
+                  <span>{{ split.firstName }} {{ split.lastName }}</span>
                 </div>
-                <span class="split-preview-amount">
-                  {{ (expenseForm.value.amount || 0) / members.length | currency:'EUR' }}
+                
+                <span class="split-preview-amount" *ngIf="splitType === 'equitativo'">
+                  {{ split.amount | currency:'EUR' }}
                 </span>
+                
+                <div class="split-custom-input-container" *ngIf="splitType === 'personalizado'">
+                  <ion-input type="number" 
+                             [value]="split.amount" 
+                             (ionInput)="onSplitInputChange(split.userId, $event)"
+                             placeholder="0.00"
+                             class="split-custom-input">
+                  </ion-input>
+                  <span class="split-currency-suffix">€</span>
+                </div>
               </div>
+            </div>
+
+            <!-- Remaining balance warning in custom split mode -->
+            <div class="split-remaining-info" *ngIf="splitType === 'personalizado' && splitRemainingAmount !== 0">
+              <ion-note [color]="splitRemainingAmount > 0 ? 'warning' : 'danger'">
+                <span *ngIf="splitRemainingAmount > 0">
+                  Falta por asignar: {{ splitRemainingAmount | currency:'EUR' }}
+                </span>
+                <span *ngIf="splitRemainingAmount < 0">
+                  Te has pasado por: {{ -splitRemainingAmount | currency:'EUR' }}
+                </span>
+              </ion-note>
             </div>
           </div>
 
-          <ion-button expand="block" type="submit" [disabled]="creating" class="guardar-gasto-btn">
+          <ion-button expand="block" type="submit" [disabled]="creating || !isFormValid()" class="guardar-gasto-btn">
             {{ creating ? 'Guardando...' : 'Guardar Gasto' }}
           </ion-button>
         </form>

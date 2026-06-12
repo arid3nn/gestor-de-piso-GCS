@@ -229,6 +229,57 @@
       font-weight: 700;
       color: #3E2319;
     }
+
+    .split-custom-input-container {
+      display: flex;
+      align-items: center;
+      background: #FFFFFF;
+      border: 1px solid #EEDCD0;
+      border-radius: 10px;
+      padding: 0 8px;
+      width: 110px;
+      height: 36px;
+      transition: border-color 0.2s ease;
+      
+      &:focus-within {
+        border-color: #592C1D;
+      }
+      
+      .split-custom-input {
+        --padding-top: 0;
+        --padding-bottom: 0;
+        --padding-start: 4px;
+        --padding-end: 4px;
+        font-size: 0.95rem;
+        font-weight: 700;
+        color: #3E2319;
+        text-align: right;
+        margin: 0;
+      }
+      
+      .split-currency-suffix {
+        font-size: 0.9rem;
+        font-weight: 700;
+        color: #8C736C;
+        margin-left: 2px;
+      }
+    }
+  }
+
+  .split-remaining-info {
+    margin-top: 14px;
+    padding-top: 12px;
+    border-top: 1px dashed rgba(62, 35, 25, 0.12);
+    text-align: right;
+    
+    ion-note {
+      font-size: 0.85rem;
+      font-weight: 700;
+      display: flex;
+      justify-content: flex-end;
+      align-items: center;
+      gap: 4px;
+    }
   }
 }
 

@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { IonicModule, AlertController } from '@ionic/angular';
@@ -30,6 +30,14 @@ export class ExpensesPage implements OnInit {
   loading = false;
   creating = false;
   currentUser: any = null;
+  splitType: 'equitativo' | 'personalizado' = 'equitativo';
+  memberSplits: { userId: string; firstName: string; lastName?: string; amount: number; isEdited: boolean }[] = [];
+
+  private flatService = inject(FlatService);
+  private api = inject(ApiService);
+  private formBuilder = inject(FormBuilder);
+  private authService = inject(AuthService);
+  private alertController = inject(AlertController);
 
   categories = [
     { value: 'GROCERIES', label: 'Comida' },
@@ -39,13 +47,7 @@ export class ExpensesPage implements OnInit {
     { value: 'OTHER', label: 'Otro' },
   ];
 
-  constructor(
-    private flatService: FlatService,
-    private api: ApiService,
-    private formBuilder: FormBuilder,
-    private authService: AuthService,
-    private alertController: AlertController
-  ) {
+  constructor() {
     this.expenseForm = this.formBuilder.group({
       title: ['', [Validators.required]],
       amount: [null, [Validators.required, Validators.min(0.01)]],
@@ -83,8 +85,19 @@ export class ExpensesPage implements OnInit {
         this.loadBalances();
       } else {
         this.members = [];
+        this.memberSplits = [];
         this.expenses = [];
         this.balances = [];
+      }
+    });
+
+    this.expenseForm.get('amount')?.valueChanges.subscribe(() => {
+      if (this.splitType === 'equitativo') {
+        this.initializeSplits();
+      } else {
+        // En modo personalizado, si cambia el total, lo reiniciamos de forma equitativa
+        // para asegurar que las partes vuelvan a sumar el total.
+        this.initializeSplits();
       }
     });
   }
@@ -144,6 +157,7 @@ export class ExpensesPage implements OnInit {
           firstName: member.user?.firstName ?? '',
           lastName: member.user?.lastName ?? '',
         }));
+        this.initializeSplits();
         this.loading = false;
       },
       error: (response) => {
@@ -151,6 +165,103 @@ export class ExpensesPage implements OnInit {
         this.loading = false;
       },
     });
+  }
+
+  initializeSplits() {
+    const totalAmount = this.expenseForm.get('amount')?.value || 0;
+    if (this.members.length === 0) {
+      this.memberSplits = [];
+      return;
+    }
+
+    const equalAmount = Number((totalAmount / this.members.length).toFixed(2));
+    let remaining = totalAmount;
+
+    this.memberSplits = this.members.map((member, index) => {
+      const value = index === this.members.length - 1 ? Number(remaining.toFixed(2)) : equalAmount;
+      remaining -= value;
+      return {
+        userId: member.userId,
+        firstName: member.firstName,
+        lastName: member.lastName,
+        amount: value,
+        isEdited: false
+      };
+    });
+  }
+
+  setSplitType(type: 'equitativo' | 'personalizado') {
+    this.splitType = type;
+    this.initializeSplits();
+  }
+
+  onSplitInputChange(userId: string, event: any) {
+    const val = parseFloat(event.target.value);
+    const amount = isNaN(val) ? 0 : val;
+    this.onSplitAmountChange(userId, amount);
+    
+    // Forzar el valor visual en el DOM para que coincida con el modelo (en caso de limitar el importe)
+    const split = this.memberSplits.find(m => m.userId === userId);
+    if (split && event.target) {
+      event.target.value = split.amount;
+    }
+  }
+
+  onSplitAmountChange(userId: string, newAmount: number) {
+    const totalAmount = this.expenseForm.get('amount')?.value || 0;
+    if (totalAmount <= 0) return;
+
+    const targetIndex = this.memberSplits.findIndex(m => m.userId === userId);
+    if (targetIndex === -1) return;
+
+    // Marcamos como editado por el usuario
+    this.memberSplits[targetIndex].isEdited = true;
+
+    // Sumamos los importes de los otros miembros ya editados
+    const otherEditedSum = this.memberSplits
+      .filter((m, idx) => m.isEdited && idx !== targetIndex)
+      .reduce((sum, m) => sum + m.amount, 0);
+
+    // El límite máximo para este miembro es total - otros editados
+    const maxAllowed = Math.max(0, totalAmount - otherEditedSum);
+    const finalValue = Math.min(newAmount, maxAllowed);
+    this.memberSplits[targetIndex].amount = Number(finalValue.toFixed(2));
+
+    // Distribuimos el resto a los miembros no editados
+    const editedSum = this.memberSplits
+      .filter(m => m.isEdited)
+      .reduce((sum, m) => sum + m.amount, 0);
+
+    const remaining = Math.max(0, totalAmount - editedSum);
+    const nonEditedMembers = this.memberSplits.filter(m => !m.isEdited);
+
+    if (nonEditedMembers.length > 0) {
+      const equalShare = Number((remaining / nonEditedMembers.length).toFixed(2));
+      let rem = remaining;
+      nonEditedMembers.forEach((m, idx) => {
+        const share = idx === nonEditedMembers.length - 1 ? Number(rem.toFixed(2)) : equalShare;
+        rem -= share;
+        m.amount = Math.max(0, share);
+      });
+    }
+  }
+
+  get totalSplitsSum(): number {
+    return this.memberSplits.reduce((sum, m) => sum + m.amount, 0);
+  }
+
+  get splitRemainingAmount(): number {
+    const totalAmount = this.expenseForm.get('amount')?.value || 0;
+    return Number((totalAmount - this.totalSplitsSum).toFixed(2));
+  }
+
+  isFormValid(): boolean {
+    if (this.expenseForm.invalid) return false;
+    if (this.splitType === 'personalizado') {
+      const amount = Number(this.expenseForm.value.amount);
+      return Math.abs(this.totalSplitsSum - amount) < 0.01;
+    }
+    return true;
   }
 
   loadExpenses() {
@@ -168,7 +279,7 @@ export class ExpensesPage implements OnInit {
   }
 
   createExpense() {
-    if (this.expenseForm.invalid || !this.selectedFlatId) {
+    if (!this.isFormValid() || !this.selectedFlatId) {
       this.expenseForm.markAllAsTouched();
       return;
     }
@@ -182,13 +293,18 @@ export class ExpensesPage implements OnInit {
     const title = this.expenseForm.value.title;
     const category = this.expenseForm.value.category;
 
-    const equalAmount = Number((amount / this.members.length).toFixed(2));
-    let remaining = amount;
-    const splits = this.members.map((member, index) => {
-      const value = index === this.members.length - 1 ? Number(remaining.toFixed(2)) : equalAmount;
-      remaining -= value;
-      return { userId: member.userId, amount: value };
-    });
+    let splits: { userId: string; amount: number }[] = [];
+    if (this.splitType === 'equitativo') {
+      const equalAmount = Number((amount / this.members.length).toFixed(2));
+      let remaining = amount;
+      splits = this.members.map((member, index) => {
+        const value = index === this.members.length - 1 ? Number(remaining.toFixed(2)) : equalAmount;
+        remaining -= value;
+        return { userId: member.userId, amount: value };
+      });
+    } else {
+      splits = this.memberSplits.map(m => ({ userId: m.userId, amount: m.amount }));
+    }
 
     this.creating = true;
     this.error = null;
@@ -203,7 +319,9 @@ export class ExpensesPage implements OnInit {
       next: () => {
         this.creating = false;
         this.successMessage = 'Gasto registrado correctamente.';
+        this.splitType = 'equitativo';
         this.expenseForm.reset({ category: 'OTHER' });
+        this.initializeSplits();
         this.loadExpenses();
         this.loadBalances();
       },
