@@ -1,0 +1,23 @@
+En este caso, partíamos del prototipo realizado anteriormente en Figma para nuestra app de gestión compartida de pisos, en el cual teníamos un bloque de las 5 funcionalidades más importantes de la app y también un prototipo del estilo de nuestra app. Los requisitos son los siguientes:
+- Asignación y creación de tareas
+- Repartición de pagos
+- Saldar pagos
+- Chat
+- Votaciones
+
+En cuanto al backend, lo hemos implementado en TypeScript, pero haciendo uso del framework NestJS. Hemos divido el servidor en pequeños dominios: users, flats, expenses, tasks y chat, cada uno de estos dominios cuenta con:
+- .controller.ts: Recibir peticiones HTTP
+- .service.ts: Contiene la lógica de negocio
+
+Para todo el almacenamiento de datos hemos hecho uso de un único archivo .XML para simplificar el proceso y centrarnos en lo que es el prototipo. 
+Por último, para la gestión del chat en tiempo real hemos implementado WebSockets mediante Socket.io para las notificaciones instantáneas del chat.
+
+Para integrar el frontend con el backend hacemos uso de la API REST expuesta y, como hemos mencionado anteriormente, de los WebSockets. En cuanto a lo que es el frontend como tal, al ser un proyecto de IONIC hemos seguido firmemente la estructura de archivos del framework. Cada página desarrollada consta de cuatro archivos:
+- .module.ts: Este archivo contiene todas las herramientas que van a ser usadas
+- .page.html: En este archivo se gestiona lo que es mostrado por pantalla
+- .page.scss: En este archivo se le da el diseño al .page.html
+- .page.ts: Este archivo contiene toda la lógica, se almacenan las variables importantes en runtime, se comunica con la API y maneja las interacciones con el usuario
+
+El desarrollo del proyecto ha sido en su gran mayoría mediante vibe coding, tras la creación del proyecto como se vio en el taller de IONIC comenzamos a usar el IDE Antigravity (visto en clase) y usándolo llevamos a cabo todo el desarrollo del prototipo.
+
+El principal problema encontrado fue a la hora de almacenar los datos, al principio lo estábamos intentando hacer con una base de datos convencional en SQLite, no obstante, a la hora de trabajar en remoto (GitHub) nos estaba dando bastantes problemas de funcionamiento de algunos endpoints de la API, por lo que decidimos simplificar el almacenamiento de datos al máximo y cambiamos a usar un archivo .XML.

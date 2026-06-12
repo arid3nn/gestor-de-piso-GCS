@@ -13,9 +13,9 @@ Módulos Principales:
 
 Para un desarrollo ágil y profesional, tecnologías que tienen mucha comunidad y son escalables:
 
-Frontend (Móvil)
+Frontend (Móvil / Web)
 
-- React Native: Ideal para desarrollar una sola vez y publicar tanto en iOS como en Android.
+- Ionic con Angular: Framework utilizado para desarrollar una sola vez y publicar en múltiples plataformas (iOS, Android y Web) aprovechando el ecosistema de Angular y Capacitor.
 
 Backend (Lógica y API)
 

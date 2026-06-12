@@ -99,7 +99,7 @@ export class ExpensesPage implements OnInit {
 
     const alert = await this.alertController.create({
       header: 'Confirmar Pago',
-      message: `¿Estás seguro de que deseas marcar como pagada la deuda de <strong>${balance.amount.toFixed(2)}€</strong> de <strong>${balance.fromName}</strong> a <strong>${balance.toName}</strong>?`,
+      message: `¿Estás seguro de que deseas marcar como pagada la deuda de ${balance.amount.toFixed(2)}€ de ${balance.fromName} a ${balance.toName}?`,
       buttons: [
         {
           text: 'Cancelar',
